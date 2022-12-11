@@ -1,0 +1,18 @@
+# Mapify Config
+# If you need any help or have any questions, feel free to ask on my Discord: https://discord.gg/qsUP2t5VpW
+
+# If the following whitelist should be treated as a blacklist
+whitelist-is-blacklist: false
+
+# List of domains that are allowed for users to use.  Be VERY careful with what you allow with this, if users have full access, they can do malicious things.
+# This list also supports regular expressions if the entry starts with "REGEXP:", like this: REGEXP:.*\.google\.com, which allows any subdomain of google.com
+# Note: this filter only applies when the command is run, not when actually downloading the images on startup or world load.
+whitelist:
+  - i.imgur.com
+
+# This makes it such that ALL provided urls must use https -- this isn't a perfect safeguard, as someone can proxy through an https server.
+# Note: this filter only applies when the command is run, not when actually downloading the images on startup or world load.
+https-only: true
+
+# The minutes that the plugin will cache the images
+cache-duration: 60
