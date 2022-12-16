@@ -3,6 +3,8 @@ package com.funnyboyroks.mapify;
 import com.funnyboyroks.mapify.command.CommandManager;
 import com.funnyboyroks.mapify.util.Cache;
 import com.funnyboyroks.mapify.util.Util;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -10,6 +12,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 public final class Mapify extends JavaPlugin {
 
@@ -36,6 +39,14 @@ public final class Mapify extends JavaPlugin {
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
+
+        Metrics metrics = new Metrics(this, 17096);
+
+        metrics.addCustomChart(new SingleLineChart("maps", () -> Mapify.INSTANCE.dataHandler.data.mapData.size()));
+        metrics.addCustomChart(new SimplePie("blacklist", () -> Mapify.INSTANCE.config.whitelistIsBlacklist + ""));
+        metrics.addCustomChart(new AdvancedPie("whitelist", () -> Mapify.INSTANCE.config.whitelist.stream().collect(Collectors.toMap(k -> k, v -> 1))));
+
+        this.getLogger().info("Metrics loaded.");
 
         this.dataHandler = new DataHandler();
         int maps = dataHandler.data.mapData.size();

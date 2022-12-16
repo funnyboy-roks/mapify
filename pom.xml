@@ -6,7 +6,7 @@
 
     <groupId>com.funnyboyroks</groupId>
     <artifactId>mapify</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
 
     <name>Mapify</name>
@@ -52,6 +52,12 @@
 <!--                                    <shadedPattern>com.funnyboyroks.mapify</shadedPattern>-->
 <!--                                </relocation>-->
 <!--                            </relocations>-->
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.bstats</pattern>
+                                    <shadedPattern>com.funnyboyroks</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -100,5 +106,12 @@
 <!--            <version>2.2</version>-->
 <!--            <scope>compile</scope>-->
 <!--        </dependency>-->
+        <!-- bStats -->
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.0.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
