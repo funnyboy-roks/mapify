@@ -77,19 +77,23 @@ public class Util {
         try {
             return ImageIO.read(url);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Mapify.INSTANCE.getLogger().severe("Invalid image url: " + url);
+            return null;
         }
     }
 
     public static ItemStack createMap(String url, int x, int y, int w, int h) {
         ItemStack stack = new ItemStack(Material.FILLED_MAP);
         MapMeta meta = (MapMeta) stack.getItemMeta();
+        assert meta != null;
 
         MapView view = Bukkit.getServer().createMap(Bukkit.getServer().getWorlds().get(0));
         Mapify.INSTANCE.dataHandler.data.mapData.put(view.getId(), new PluginData.MapData(url, x, y, w, h));
 
         view.getRenderers().forEach(view::removeRenderer);
-        view.addRenderer(Util.getRenderer(view));
+        MapRenderer renderer = Util.getRenderer(view);
+        if(renderer == null) return null;
+        view.addRenderer(renderer);
 
         meta.setMapView(view);
 
@@ -106,7 +110,10 @@ public class Util {
     public static List<ItemStack> getMaps(String url, int width, int height) {
         List<ItemStack> out = new ArrayList<>();
 
-        getImage(getUrl(url));
+        var u = getUrl(url);
+        if (u == null) return null;
+        var img = getImage(u);
+        if (img == null) return null;
 
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
@@ -150,7 +157,9 @@ public class Util {
 
         if (data == null) return null;
 
-        return new CustomMapRenderer(Mapify.INSTANCE.imageCache.get(getUrl(data.url)), data.x, data.y, data.scaleX, data.scaleY);
+        Image img = Mapify.INSTANCE.imageCache.get(getUrl(data.url));
+        if (img == null) return null;
+        return new CustomMapRenderer(img, data.x, data.y, data.scaleX, data.scaleY);
     }
 
     public static boolean isAllowed(URL url) {
@@ -164,7 +173,7 @@ public class Util {
                     return !Mapify.INSTANCE.config.whitelistIsBlacklist;
                 }
             } else {
-                return s.equalsIgnoreCase(host);
+                if (s.equalsIgnoreCase(host)) return !Mapify.INSTANCE.config.whitelistIsBlacklist;
             }
         }
         return Mapify.INSTANCE.config.whitelistIsBlacklist;

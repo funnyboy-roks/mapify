@@ -10,6 +10,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.util.Collections;
@@ -35,7 +36,7 @@ public class CommandRefreshMaps implements CommandExecutor, TabCompleter {
             MapMeta meta = (MapMeta) item.getItemMeta();
 
             MapView view = meta.getMapView();
-            var renderer = Util.getRenderer(view);
+            MapRenderer renderer = Util.getRenderer(view);
             if (renderer == null) continue;
             view.getRenderers().forEach(view::removeRenderer);
             view.addRenderer(renderer);

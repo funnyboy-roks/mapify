@@ -60,6 +60,12 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
         }
 
         List<ItemStack> stacks = Util.getMaps(args[0], dims.x, dims.y);
+
+        if (stacks == null) {
+            player.sendMessage(ChatColor.RED + "This URL does not have an image.");
+            return true;
+        }
+
         Util.giveItems(player, stacks.toArray(ItemStack[]::new));
 
         player.sendMessage(ChatColor.GREEN + "Given " + stacks.size() + " map" + (stacks.size() == 1 ? "." : "s."));
