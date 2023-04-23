@@ -35,4 +35,5 @@ If this does not help, feel free to ask on the Discord (linked above).
 ## Permissions
 
 `mapify.command.mapify` - Permission to use the `/mapify` command - Default: OP
+
 `mapify.command.refreshmaps` - Permission to use the `/refreshmaps` command - Default: OP
