@@ -34,13 +34,14 @@ public class Cache<K, V> {
      * @return the amount of cleared values
      */
     public int clearExpired() {
-        var count = new AtomicInteger(0);
-        map.forEach((key, value) -> {
+        AtomicInteger count = new AtomicInteger(0);
+        for (K key : map.keySet()) {
+            CacheItem value = map.get(key);
             if (value.isExpired()) {
                 map.remove(key);
                 count.incrementAndGet();
             }
-        });
+        }
         return count.get();
     }
 
