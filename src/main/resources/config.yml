@@ -15,4 +15,13 @@ whitelist:
 https-only: true
 
 # The minutes that the plugin will cache the images
+# This should really not be changed unless you know what you are doing.
 cache-duration: 60
+
+# Whether the plugin should download the images to the disk
+# Note: The images are saved in the `img/` folder with funky names.
+#       Do not change the names or the file info as that would mess up the storage method.
+save-images: false
+
+# If debug messages should be printed.
+debug-logging: false

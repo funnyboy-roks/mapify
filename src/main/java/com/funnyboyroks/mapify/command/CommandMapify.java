@@ -70,9 +70,6 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
 
         player.sendMessage(ChatColor.GREEN + "Given " + stacks.size() + " map" + (stacks.size() == 1 ? "." : "s."));
 
-//        player.sendMessage("/mapify " + Arrays.toString(args));
-
-
         return true;
     }
 

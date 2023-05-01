@@ -15,6 +15,8 @@ public class PluginConfig {
     public List<String> whitelist;
     public int          cacheDuration;
     public boolean      httpsOnly;
+    public boolean      saveImages;
+    public boolean      debug;
 
     public PluginConfig(Mapify plugin) throws IOException {
         plugin.saveDefaultConfig();
@@ -27,7 +29,8 @@ public class PluginConfig {
         this.whitelist = config.getStringList("whitelist");
         this.cacheDuration = config.getInt("cache-duration", 60);
         this.httpsOnly = config.getBoolean("https-only", true);
-
+        this.saveImages = config.getBoolean("save-images", false);
+        this.debug = config.getBoolean("debug-logging", false);
 
     }
 

@@ -27,7 +27,6 @@ public class DataHandler {
         if (!this.dataFile.exists()) {
             Mapify.INSTANCE.getLogger().info("No data file found.  Using blank data...");
             this.data = new PluginData();
-//            this.saveData();
         } else {
             Mapify.INSTANCE.getLogger().info("Loading from data file...");
             String content = Files.readString(this.dataFile.toPath());
@@ -36,14 +35,18 @@ public class DataHandler {
     }
 
     public void saveData() throws IOException {
-        Mapify.INSTANCE.getLogger().info("Saving data file...");
+        if (Mapify.INSTANCE.config.debug) {
+            Mapify.INSTANCE.getLogger().info("Saving data file...");
+        }
         String json = gson.toJson(data);
         if (!this.dataFile.getParentFile().exists()) this.dataFile.getParentFile().mkdir();
         if (!this.dataFile.exists()) this.dataFile.createNewFile();
         FileWriter fw = new FileWriter(this.dataFile);
         fw.write(json);
         fw.close();
-        Mapify.INSTANCE.getLogger().info("Done saving data.");
+        if (Mapify.INSTANCE.config.debug) {
+            Mapify.INSTANCE.getLogger().info("Done saving data.");
+        }
     }
 
 }

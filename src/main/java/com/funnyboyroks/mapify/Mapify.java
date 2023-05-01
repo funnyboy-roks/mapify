@@ -9,8 +9,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -45,7 +47,6 @@ public final class Mapify extends JavaPlugin {
         metrics.addCustomChart(new SingleLineChart("maps", () -> Mapify.INSTANCE.dataHandler.data.mapData.size()));
         metrics.addCustomChart(new SimplePie("blacklist", () -> Mapify.INSTANCE.config.whitelistIsBlacklist + ""));
         metrics.addCustomChart(new AdvancedPie("whitelist", () -> Mapify.INSTANCE.config.whitelist.stream().collect(Collectors.toMap(k -> k, v -> 1))));
-
         this.getLogger().info("Metrics loaded.");
 
         this.dataHandler = new DataHandler();
@@ -60,8 +61,25 @@ public final class Mapify extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        if (this.config.saveImages) {
+            File imgDir = Path.of(this.getDataFolder().getPath(), "img").toFile();
+            if (!imgDir.exists()) {
+                boolean mkdir = imgDir.mkdirs();
+                if (!mkdir) {
+                    this.getLogger().severe("Unable to create img directory.");
+                }
+            }
+        }
 
         this.imageCache = new Cache<>((long) this.config.cacheDuration * 60 * 1000, Util::getImage);
+
+        // Clear the expired items every hour
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(
+            this,
+            this.imageCache::clearExpired,
+            0,
+            60 * 60 * 20L
+        ); // 60 minutes * 60 seconds * 20 ticks
 
     }
 

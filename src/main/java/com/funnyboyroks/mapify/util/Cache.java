@@ -2,6 +2,7 @@ package com.funnyboyroks.mapify.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 public class Cache<K, V> {
@@ -13,19 +14,34 @@ public class Cache<K, V> {
     public Cache(long cacheDurationMs, Function<K, V> getter) {
         this.cacheDuration = cacheDurationMs;
         this.getter = getter;
-
     }
 
     public V get(K key) {
         if (map.containsKey(key)) {
             CacheItem item = map.get(key);
-            if (System.currentTimeMillis() - item.insertedTime < this.cacheDuration) {
+            if (!item.isExpired()) {
+                item.refresh();
                 return item.value;
             }
         }
         V newValue = this.getter.apply(key);
         this.map.put(key, new CacheItem(newValue));
         return newValue;
+    }
+
+    /**
+     * Clears the expired items in the cache
+     * @return the amount of cleared values
+     */
+    public int clearExpired() {
+        var count = new AtomicInteger(0);
+        map.forEach((key, value) -> {
+            if (value.isExpired()) {
+                map.remove(key);
+                count.incrementAndGet();
+            }
+        });
+        return count.get();
     }
 
     public long getCacheDuration() {
@@ -38,7 +54,7 @@ public class Cache<K, V> {
 
     private class CacheItem {
 
-        private final long insertedTime;
+        private long insertedTime;
         private final V    value;
 
         public CacheItem(V value) {
@@ -46,5 +62,12 @@ public class Cache<K, V> {
             this.value = value;
         }
 
+        public void refresh() {
+            this.insertedTime = System.currentTimeMillis();
+        }
+
+        public boolean isExpired() {
+            return System.currentTimeMillis() - this.insertedTime > cacheDuration;
+        }
     }
 }
