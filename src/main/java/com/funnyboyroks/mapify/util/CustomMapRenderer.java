@@ -6,24 +6,26 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class CustomMapRenderer extends MapRenderer {
 
-    private final Image image;
-    private final int   x;
-    private final int   y;
+    private final BufferedImage image;
 
     public CustomMapRenderer(Image image, int x, int y, int scaleX, int scaleY) {
-
-        this.image = image.getScaledInstance(scaleX * 128, scaleY * 128, Image.SCALE_DEFAULT);
-
-        this.x = x * -128;
-        this.y = y * -128;
+        //BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+        BufferedImage img = (BufferedImage) image.getScaledInstance(scaleX * 128, scaleY * 128, Image.SCALE_DEFAULT);
+        this.image = img.getSubimage(x * 128, y * 128, 128, 128);
     }
 
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
+        for (int x = 0; x < 128; x++) {
+            for (int y = 0; y < 128; y++) {
+                var col = new Color(this.image.getRGB(x, y));
+                canvas.setPixelColor(x, y, col);
 
-        canvas.drawImage(x, y, image);
+            }
+        }
     }
 }
