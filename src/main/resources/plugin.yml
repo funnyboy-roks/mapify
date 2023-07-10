@@ -7,8 +7,10 @@ description: A plugin to convert your images into maps!
 commands:
   mapify:
     usage: /mapify <url> [dimensions]
+    description: Create a map or maps from a url
   refreshmaps:
     usage: /refreshmaps
+    description: Rerender all maps in your inventory
 permissions:
   mapify.command.mapify:
     default: op

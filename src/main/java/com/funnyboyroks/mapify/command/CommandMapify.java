@@ -23,18 +23,19 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.RED + "This command can only be used in-game.");
             return true;
         }
+
         if (!sender.hasPermission("mapify.command.refreshmaps")) {
             sender.sendMessage(ChatColor.RED + "You do not have permission to run this command.");
             return true;
         }
 
-        Player player = (Player) sender;
-        if (args.length > 2) {
+        if (args.length == 0 || args.length > 2) {
             return false;
         }
 
         URL url = Util.getUrl(args[0]);
 
+        Player player = (Player) sender;
         if (url == null) {
             player.sendMessage(ChatColor.RED + "Please specify a valid URL.");
             return true;
@@ -75,9 +76,6 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 2) {
-            return List.of("1x1");
-        }
-        return Collections.emptyList();
+        return args.length == 2 ? List.of("1x1") : Collections.emptyList();
     }
 }
