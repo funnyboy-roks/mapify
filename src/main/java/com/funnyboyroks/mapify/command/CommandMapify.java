@@ -24,7 +24,7 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (!sender.hasPermission("mapify.command.refreshmaps")) {
+        if (!sender.hasPermission("mapify.command.mapify")) {
             sender.sendMessage(ChatColor.RED + "You do not have permission to run this command.");
             return true;
         }

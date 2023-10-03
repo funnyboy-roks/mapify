@@ -24,7 +24,8 @@ public class CommandRefreshMaps implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.RED + "This command can only be run in-game.");
             return true;
         }
-        if (!sender.hasPermission("mapify.command.mapify")) {
+
+        if (!sender.hasPermission("mapify.command.refreshmaps")) {
             sender.sendMessage(net.md_5.bungee.api.ChatColor.RED + "You do not have permission to run this command.");
             return true;
         }
