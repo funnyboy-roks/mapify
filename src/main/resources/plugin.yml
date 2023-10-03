@@ -8,9 +8,11 @@ commands:
   mapify:
     usage: /mapify <url> [dimensions]
     description: Create a map or maps from a url
+    permission: mapify.command.mapify
   refreshmaps:
     usage: /refreshmaps
     description: Rerender all maps in your inventory
+    permission: mapify.command.refreshmaps
 permissions:
   mapify.command.mapify:
     default: op
