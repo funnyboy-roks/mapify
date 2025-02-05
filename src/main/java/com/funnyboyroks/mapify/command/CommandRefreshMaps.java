@@ -7,16 +7,27 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandRefreshMaps implements CommandExecutor, TabCompleter {
+
+    private ItemStack[] getItemFramesInRadius(Player player, int radius) {
+        return player.getNearbyEntities(radius, radius, radius).stream()
+            .filter(e -> e instanceof ItemFrame)
+            .map(e -> ((ItemFrame) e).getItem())
+            .filter(i -> !i.getType().isAir())
+            .toArray(ItemStack[]::new);
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -26,13 +37,32 @@ public class CommandRefreshMaps implements CommandExecutor, TabCompleter {
         }
 
         if (!sender.hasPermission("mapify.command.refreshmaps")) {
-            sender.sendMessage(net.md_5.bungee.api.ChatColor.RED + "You do not have permission to run this command.");
+            sender.sendMessage(ChatColor.RED + "You do not have permission to run this command.");
             return true;
+        }
+
+        if (args.length > 1) {
+            sender.sendMessage(ChatColor.RED + "Usage: /refreshmaps [radius]");
+            return true;
+        }
+
+        int radius = -1;
+
+        if (args.length == 1) {
+            try {
+                radius = Integer.parseInt(args[0]);
+            } catch (NumberFormatException ex) {
+                sender.sendMessage(ChatColor.RED + "Usage: /refreshmaps [radius]");
+                return true;
+            }
         }
 
         Player player = (Player) sender;
         int count = 0;
-        for (ItemStack item : player.getInventory().getContents()) {
+        ItemStack[] items = radius == -1
+            ? player.getInventory().getContents()
+            : getItemFramesInRadius(player, radius);
+        for (ItemStack item : items) {
             if (item == null || item.getType() != Material.FILLED_MAP) continue;
             MapMeta meta = (MapMeta) item.getItemMeta();
 

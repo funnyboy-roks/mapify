@@ -10,8 +10,8 @@ commands:
     description: Create a map or maps from a url
     permission: mapify.command.mapify
   refreshmaps:
-    usage: /refreshmaps
-    description: Rerender all maps in your inventory
+    usage: /refreshmaps [radius]
+    description: Rerender all maps in your inventory or in item frames around you when a radius is specified
     permission: mapify.command.refreshmaps
 permissions:
   mapify.command.mapify:
