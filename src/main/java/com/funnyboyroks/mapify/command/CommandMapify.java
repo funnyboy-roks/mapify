@@ -46,14 +46,6 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
                 return true;
             }
         } else {
-            int cooldown = player.isOp() ? Mapify.INSTANCE.config.cooldown : Mapify.INSTANCE.config.opCooldown;
-            if (cooldown > 0) {
-                long end = System.currentTimeMillis() + cooldown * 1000;
-                cooldownMap.put(player.getUniqueId(), end);
-                Bukkit.getScheduler().runTaskLater(Mapify.INSTANCE, () -> {
-                    cooldownMap.remove(player.getUniqueId());
-                }, cooldown * 20L);
-            }
         }
 
         if (args.length == 0 || args.length > 2) {
@@ -86,11 +78,25 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
             }
         }
 
+        if (!Util.dimsMatch(dims, Mapify.INSTANCE.config.maxSize)) {
+            player.sendMessage(ChatColor.RED + "Dimensions speified are too large.");
+            return true;
+        }
+
         List<ItemStack> stacks = Util.getMaps(args[0], dims.x, dims.y);
 
         if (stacks == null) {
             player.sendMessage(ChatColor.RED + "This URL does not have an image.");
             return true;
+        }
+
+        int cooldown = player.isOp() ? Mapify.INSTANCE.config.cooldown : Mapify.INSTANCE.config.opCooldown;
+        if (cooldown > 0) {
+            long end = System.currentTimeMillis() + cooldown * 1000;
+            cooldownMap.put(player.getUniqueId(), end);
+            Bukkit.getScheduler().runTaskLater(Mapify.INSTANCE, () -> {
+                cooldownMap.remove(player.getUniqueId());
+            }, cooldown * 20L);
         }
 
         Util.giveItems(player, stacks.toArray(ItemStack[]::new));

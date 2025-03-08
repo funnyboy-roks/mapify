@@ -15,7 +15,6 @@ import org.bukkit.map.MapView;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
@@ -23,16 +22,13 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Filter;
 
 public class Util {
 
@@ -238,5 +234,28 @@ public class Util {
             out.append(Integer.toHexString(0xff & b));
         }
         return out.toString();
+    }
+
+    public static boolean dimsMatch(Point dims, String max) {
+        // "" means no filter
+        if (max.isBlank()) return true;
+
+        // WxH
+        if (max.contains("x")) {
+            // dims
+            Point bounds = Util.getDimensions(max);
+            if (bounds == null) return false; // invalid dims
+            return dims.x <= bounds.x && dims.y <= bounds.y;
+        }
+
+        // N
+        int area;
+        try {
+            area = Integer.parseInt(max);
+        } catch (NumberFormatException ignored) {
+            return false; // invalid number
+        }
+
+        return area <= 0 || dims.x * dims.y <= area;
     }
 }

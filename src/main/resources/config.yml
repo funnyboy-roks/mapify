@@ -31,3 +31,10 @@ cooldown: 0
 
 # Cooldown for operators using the `/mapify` command, in seconds.
 op-cooldown: 0
+
+# Maximum size of maps that may be generated.  This can be specified in two ways:
+# - Area: If max-size is specified as a single number, it will restrict map creation size by area.
+#     i.e., if `max-size: 9`, then a map of size 3x4 is not valid.
+# - Bounds: If max-size is specifi as dimensions (WIDTHxHEIGHT), then it will be treated as upper bounds on the width and height
+#     i.e., if `max-size: 3x3`, then a map of size 3x4 is not valid.
+max-size: -1

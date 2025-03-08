@@ -19,6 +19,7 @@ public class PluginConfig {
     public boolean      debug;
     public int          cooldown;
     public int          opCooldown;
+    public String       maxSize;
 
     public PluginConfig(Mapify plugin) throws IOException {
         plugin.saveDefaultConfig();
@@ -35,7 +36,7 @@ public class PluginConfig {
         this.debug = config.getBoolean("debug-logging", false);
         this.cooldown = config.getInt("cooldown", 0);
         this.opCooldown = config.getInt("opCooldown", 0);
-
+        this.maxSize = config.getString("max-size", "");
     }
 
     public void update() throws IOException {
