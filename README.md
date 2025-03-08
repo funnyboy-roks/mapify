@@ -18,13 +18,14 @@ Dimensions are provided using the format `WIDTHxHEIGHT` (in terms of blocks).
 
 Your images will be stretched to fit into the desired size.
 
-### `/refreshmaps`
+### `/mapify reload`
 
-Refresh the renderers of all maps in your inventory.
+Reload config file
 
-This is only needed if the plugin's maps are not working.
+### `/refreshmaps [radius]`
 
-If this does not help, feel free to ask on the Discord (linked above).
+Refresh the maps in your inventory or in item frames within a given
+radius.
 
 ## Config
 
@@ -34,9 +35,10 @@ If this does not help, feel free to ask on the Discord (linked above).
 
 ## Permissions
 
-`mapify.command.mapify` - Permission to use the `/mapify` command - Default: OP
-
-`mapify.command.refreshmaps` - Permission to use the `/refreshmaps` command - Default: OP
+- `mapify.command.mapify` - Permission to use the `/mapify` command - Default: OP
+- `mapify.command.mapify.reload` - Permission to use the `/mapify reload` command - Default: OP
+- `mapify.command.refreshmaps` - Permission to use the `/refreshmaps` command - Default: OP
+- `mapify.operator` - Permission to determine whether mapify should treat a player as an operator - Default: OP
 
 ## FAQ
 
