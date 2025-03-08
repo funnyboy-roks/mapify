@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PluginConfig {
@@ -27,7 +28,7 @@ public class PluginConfig {
         this.update();
 
         FileConfiguration config = plugin.getConfig();
-
+        
         this.whitelistIsBlacklist = config.getBoolean("whitelist-is-blacklist", true);
         this.whitelist = config.getStringList("whitelist");
         this.cacheDuration = config.getInt("cache-duration", 60);

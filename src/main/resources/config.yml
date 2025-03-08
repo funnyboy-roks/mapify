@@ -7,6 +7,7 @@ whitelist-is-blacklist: false
 # List of domains that are allowed for users to use.  Be VERY careful with what you allow with this, if users have full access, they can do malicious things.
 # This list also supports regular expressions if the entry starts with "REGEXP:", like this: REGEXP:.*\.google\.com, which allows any subdomain of google.com
 # Note: this filter only applies when the command is run, not when actually downloading the images on startup or world load.
+# Note: If no filtering is desired, then you can add "REGEXP:.*" to this list and all sites will be allowed
 whitelist:
   - i.imgur.com
 
