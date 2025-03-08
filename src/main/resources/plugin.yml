@@ -6,8 +6,8 @@ authors: [ funnyboy_roks ]
 description: A plugin to convert your images into maps!
 commands:
   mapify:
-    usage: /mapify <url> [dimensions]
-    description: Create a map or maps from a url
+    usage: /mapify <url|reload> [dimensions]
+    description: Create a map or maps from a url or reload plugin configuration
     permission: mapify.command.mapify
   refreshmaps:
     usage: /refreshmaps [radius]
@@ -17,6 +17,9 @@ permissions:
   mapify.command.mapify:
     default: op
     description: Permission to use the command `/mapify`
+  mapify.command.mapify.reload:
+    default: op
+    description: Permission to use the command `/mapify reload`
   mapify.command.refreshmaps:
     default: op
     description: Permission to use the command `/refreshmaps`

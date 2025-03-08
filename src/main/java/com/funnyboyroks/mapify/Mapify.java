@@ -57,10 +57,25 @@ public final class Mapify extends JavaPlugin {
 
 
         try {
-            config = new PluginConfig(INSTANCE);
+            this.loadConfig();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        // Clear the expired items every hour
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(
+            this,
+            this.imageCache::clearExpired,
+            0,
+            60 * 60 * 20L
+        ); // 60 minutes * 60 seconds * 20 ticks
+
+    }
+
+    public void loadConfig() throws IOException {
+            this.reloadConfig();
+            config = new PluginConfig(INSTANCE);
+
         if (this.config.saveImages) {
             File imgDir = Path.of(this.getDataFolder().getPath(), "img").toFile();
             if (!imgDir.exists()) {
@@ -71,16 +86,11 @@ public final class Mapify extends JavaPlugin {
             }
         }
 
-        this.imageCache = new Cache<>((long) this.config.cacheDuration * 60 * 1000, Util::getImage);
-
-        // Clear the expired items every hour
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(
-            this,
-            this.imageCache::clearExpired,
-            0,
-            60 * 60 * 20L
-        ); // 60 minutes * 60 seconds * 20 ticks
-
+        if (this.imageCache == null) {
+            this.imageCache = new Cache<>((long) this.config.cacheDuration * 60 * 1000, Util::getImage);
+        } else {
+            this.imageCache.setCacheDuration(this.config.cacheDuration * 60 * 1000);
+        }
     }
 
     @Override
