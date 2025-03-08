@@ -20,3 +20,6 @@ permissions:
   mapify.command.refreshmaps:
     default: op
     description: Permission to use the command `/refreshmaps`
+  mapify.operator:
+    default: op
+    description: Appear as an operator to mapify.  This is primarily used for operator cooldowns.

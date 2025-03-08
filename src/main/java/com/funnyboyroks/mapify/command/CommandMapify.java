@@ -90,7 +90,7 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        int cooldown = player.isOp() ? Mapify.INSTANCE.config.cooldown : Mapify.INSTANCE.config.opCooldown;
+        int cooldown = sender.hasPermission("mapify.operator") ? Mapify.INSTANCE.config.opCooldown : Mapify.INSTANCE.config.cooldown;
         if (cooldown > 0) {
             long end = System.currentTimeMillis() + cooldown * 1000;
             cooldownMap.put(player.getUniqueId(), end);
