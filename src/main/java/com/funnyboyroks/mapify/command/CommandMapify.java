@@ -3,6 +3,8 @@ package com.funnyboyroks.mapify.command;
 import com.funnyboyroks.mapify.Mapify;
 import com.funnyboyroks.mapify.util.Util;
 import net.md_5.bungee.api.ChatColor;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,9 +15,14 @@ import org.bukkit.inventory.ItemStack;
 import java.awt.*;
 import java.net.URL;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class CommandMapify implements CommandExecutor, TabCompleter {
+
+    private static final Map<UUID, Long> cooldownMap = new HashMap<>();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -29,13 +36,32 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        Player player = (Player) sender;
+        Long cdEnd = cooldownMap.get(player.getUniqueId());
+        if (cdEnd != null) {
+            long current = System.currentTimeMillis();
+            long remaining = (cdEnd - current) / 1000;
+            if (remaining > 0) {
+                sender.sendMessage(ChatColor.RED + "You can use this command again in %d seconds.".formatted(remaining));
+                return true;
+            }
+        } else {
+            int cooldown = player.isOp() ? Mapify.INSTANCE.config.cooldown : Mapify.INSTANCE.config.opCooldown;
+            if (cooldown > 0) {
+                long end = System.currentTimeMillis() + cooldown * 1000;
+                cooldownMap.put(player.getUniqueId(), end);
+                Bukkit.getScheduler().runTaskLater(Mapify.INSTANCE, () -> {
+                    cooldownMap.remove(player.getUniqueId());
+                }, cooldown * 20L);
+            }
+        }
+
         if (args.length == 0 || args.length > 2) {
             return false;
         }
 
         URL url = Util.getUrl(args[0]);
 
-        Player player = (Player) sender;
         if (url == null) {
             player.sendMessage(ChatColor.RED + "Please specify a valid URL.");
             return true;

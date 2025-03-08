@@ -17,6 +17,8 @@ public class PluginConfig {
     public boolean      httpsOnly;
     public boolean      saveImages;
     public boolean      debug;
+    public int          cooldown;
+    public int          opCooldown;
 
     public PluginConfig(Mapify plugin) throws IOException {
         plugin.saveDefaultConfig();
@@ -31,6 +33,8 @@ public class PluginConfig {
         this.httpsOnly = config.getBoolean("https-only", true);
         this.saveImages = config.getBoolean("save-images", false);
         this.debug = config.getBoolean("debug-logging", false);
+        this.cooldown = config.getInt("cooldown", 0);
+        this.opCooldown = config.getInt("opCooldown", 0);
 
     }
 

@@ -25,3 +25,9 @@ save-images: false
 
 # If debug messages should be printed.
 debug-logging: false
+
+# Cooldown for the `/mapify` command, in seconds.
+cooldown: 0
+
+# Cooldown for operators using the `/mapify` command, in seconds.
+op-cooldown: 0
