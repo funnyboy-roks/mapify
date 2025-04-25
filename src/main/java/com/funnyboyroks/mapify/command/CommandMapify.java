@@ -3,6 +3,7 @@ package com.funnyboyroks.mapify.command;
 import com.funnyboyroks.mapify.Mapify;
 import com.funnyboyroks.mapify.PluginConfig;
 import com.funnyboyroks.mapify.PluginConfig.Diff;
+import com.funnyboyroks.mapify.PluginConfig.Keys;
 import com.funnyboyroks.mapify.util.Util;
 import net.md_5.bungee.api.ChatColor;
 
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +54,105 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    public boolean commandConfig(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            return false;
+        }
+
+        var field = args[0];
+
+        switch (field) {
+            case PluginConfig.Keys.WHITELIST_IS_BLACKLIST: {
+                if (args[1].equalsIgnoreCase("true")) {
+                    Mapify.INSTANCE.config.whitelistIsBlacklist = true;
+                } else if (args[1].equalsIgnoreCase("false")) {
+                    Mapify.INSTANCE.config.whitelistIsBlacklist = false;
+                } else {
+                    sender.sendMessage(ChatColor.RED + "%s may only be set to `true` or `false`".formatted(field));
+                    return true;
+                }
+            } break;
+            case PluginConfig.Keys.WHITELIST: {
+                if (args.length < 3) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /mapify config %s <add|remove> <domain>".formatted(field));
+                    return true;
+                }
+
+                var url = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+                var url2 = Util.getUrl(url);
+                var host = url2 == null ? url : url2.getHost();
+                if (args[1].equalsIgnoreCase("add")) {
+                    var whitelist = Mapify.INSTANCE.config.whitelist;
+                    if (!whitelist.contains(host)) {
+                        whitelist.add(host);
+                    }
+                } else if (args[1].equalsIgnoreCase("remove")) {
+                    Mapify.INSTANCE.config.whitelist.remove(host);
+                } else {
+                    sender.sendMessage(ChatColor.RED + "%s may only perform `add` or `remove`".formatted(field));
+                    return true;
+                }
+            } break;
+            case PluginConfig.Keys.CACHE_DURATION: {
+                var n =  Util.tryParseInt(args[1]);
+                if (n == null) {
+                    sender.sendMessage(ChatColor.RED + "%s may only be set to an integer.".formatted(field));
+                    return true;
+                } else {
+                    Mapify.INSTANCE.config.cacheDuration = n;
+                }
+            } break;
+            case PluginConfig.Keys.SAVE_IMAGES: {
+                if (args[1].equalsIgnoreCase("true")) {
+                    Mapify.INSTANCE.config.saveImages = true;
+                } else if (args[1].equalsIgnoreCase("false")) {
+                    Mapify.INSTANCE.config.saveImages = false;
+                } else {
+                    sender.sendMessage(ChatColor.RED + "%s may only be set to `true` or `false`".formatted(field));
+                    return true;
+                }
+            } break;
+            case PluginConfig.Keys.DEBUG_LOGGING: {
+                if (args[1].equalsIgnoreCase("true")) {
+                    Mapify.INSTANCE.config.debug = true;
+                } else if (args[1].equalsIgnoreCase("false")) {
+                    Mapify.INSTANCE.config.debug = false;
+                } else {
+                    sender.sendMessage(ChatColor.RED + "%s may only be set to `true` or `false`".formatted(field));
+                    return true;
+                }
+            } break;
+            case PluginConfig.Keys.COOLDOWN: {
+                var n =  Util.tryParseInt(args[1]);
+                if (n == null) {
+                    sender.sendMessage(ChatColor.RED + "%s may only be set to an integer.".formatted(field));
+                    return true;
+                } else {
+                    Mapify.INSTANCE.config.cooldown = n;
+                }
+            } break;
+            case PluginConfig.Keys.OP_COOLDOWN: {
+                var n =  Util.tryParseInt(args[1]);
+                if (n == null) {
+                    sender.sendMessage(ChatColor.RED + "%s may only be set to an integer.".formatted(field));
+                    return true;
+                } else {
+                    Mapify.INSTANCE.config.opCooldown = n;
+                }
+            } break;
+            case PluginConfig.Keys.MAX_SIZE: {
+                Mapify.INSTANCE.config.maxSize = args[1];
+            } break;
+            default: {
+                sender.sendMessage(ChatColor.RED + "Unknown field '%s'".formatted(field));
+            } break;
+        }
+        Mapify.INSTANCE.config.save(Mapify.INSTANCE);
+        sender.sendMessage(ChatColor.GREEN + "Config updated!");
+
+        return true;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("mapify.command.mapify")) {
@@ -65,6 +166,15 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
                 return true;
             }
             return reloadConfig(sender);
+        }
+
+        if (args.length >= 1 && args[0].equals("config")) {
+            if (!sender.hasPermission("mapify.command.mapify.config")) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission to run this command.");
+                return true;
+            }
+            ;
+            return commandConfig(sender, Arrays.copyOfRange(args, 1, args.length));
         }
 
         if (!(sender instanceof Player)) {
@@ -95,7 +205,12 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
         }
 
         if (!Util.isAllowed(url)) {
-            player.sendMessage(ChatColor.RED + "This is not a valid domain, please contact your server administrators if you believe this is an issue.");
+            if (Util.isOperator(player)) {
+                player.sendMessage(ChatColor.RED + "This domain is not whitelisted in your Mapify config.");
+                player.sendMessage(ChatColor.RED + "Run " + ChatColor.DARK_RED + "/mapify config whitelist add " + url.getHost() + ChatColor.RED + " to automatically add it to the config.");
+            } else {
+                player.sendMessage(ChatColor.RED + "This is not a valid domain, please contact your server administrators if you believe this is an issue.");
+            }
             return true;
         }
 

@@ -22,6 +22,18 @@ public class PluginConfig {
     public int          opCooldown;
     public String       maxSize;
 
+    public static class Keys {
+        public static final String WHITELIST_IS_BLACKLIST = "whitelist-is-blacklist";
+        public static final String WHITELIST = "whitelist";
+        public static final String CACHE_DURATION = "cache-duration";
+        public static final String HTTPS_ONLY = "https-only";
+        public static final String SAVE_IMAGES = "save-images";
+        public static final String DEBUG_LOGGING = "debug-logging";
+        public static final String COOLDOWN = "cooldown";
+        public static final String OP_COOLDOWN = "op-cooldown";
+        public static final String MAX_SIZE = "max-size";
+    }
+
     public PluginConfig(Mapify plugin) throws IOException {
         plugin.saveDefaultConfig();
         this.configFile = new File(plugin.getDataFolder(), "config.yml");
@@ -29,19 +41,33 @@ public class PluginConfig {
 
         FileConfiguration config = plugin.getConfig();
         
-        this.whitelistIsBlacklist = config.getBoolean("whitelist-is-blacklist", true);
-        this.whitelist = config.getStringList("whitelist");
-        this.cacheDuration = config.getInt("cache-duration", 60);
-        this.httpsOnly = config.getBoolean("https-only", true);
-        this.saveImages = config.getBoolean("save-images", false);
-        this.debug = config.getBoolean("debug-logging", false);
-        this.cooldown = config.getInt("cooldown", 0);
-        this.opCooldown = config.getInt("op-cooldown", 0);
-        this.maxSize = config.getString("max-size", "");
+        this.whitelistIsBlacklist = config.getBoolean(Keys.WHITELIST_IS_BLACKLIST, true);
+        this.whitelist = config.getStringList(Keys.WHITELIST);
+        this.cacheDuration = config.getInt(Keys.CACHE_DURATION, 60);
+        this.httpsOnly = config.getBoolean(Keys.HTTPS_ONLY, true);
+        this.saveImages = config.getBoolean(Keys.SAVE_IMAGES, false);
+        this.debug = config.getBoolean(Keys.DEBUG_LOGGING, false);
+        this.cooldown = config.getInt(Keys.COOLDOWN, 0);
+        this.opCooldown = config.getInt(Keys.OP_COOLDOWN, 0);
+        this.maxSize = config.getString(Keys.MAX_SIZE, "");
     }
 
     public void update() throws IOException {
         ConfigUpdater.update(Mapify.INSTANCE, "config.yml", this.configFile);
+    }
+
+    public void save(Mapify plugin) {
+        var config = plugin.getConfig();
+        config.set(Keys.WHITELIST_IS_BLACKLIST, this.whitelistIsBlacklist);
+        config.set(Keys.WHITELIST, this.whitelist);
+        config.set(Keys.CACHE_DURATION, this.cacheDuration);
+        config.set(Keys.HTTPS_ONLY, this.httpsOnly);
+        config.set(Keys.SAVE_IMAGES, this.saveImages);
+        config.set(Keys.DEBUG_LOGGING, this.debug);
+        config.set(Keys.COOLDOWN, this.cooldown);
+        config.set(Keys.OP_COOLDOWN, this.opCooldown);
+        config.set(Keys.MAX_SIZE, this.maxSize);
+        plugin.saveConfig();
     }
 
     // should be a record, but we're using old java
@@ -60,23 +86,23 @@ public class PluginConfig {
     public List<Diff> diff(PluginConfig neu) {
         List<Diff> out = new ArrayList<>();
         if (this.whitelistIsBlacklist != neu.whitelistIsBlacklist)
-            out.add(new Diff("whitelist-is-blacklist", this.whitelistIsBlacklist, neu.whitelistIsBlacklist));
+            out.add(new Diff(Keys.WHITELIST_IS_BLACKLIST, this.whitelistIsBlacklist, neu.whitelistIsBlacklist));
         if (!this.whitelist.equals(neu.whitelist))
-            out.add(new Diff("whitelist", this.whitelist, neu.whitelist));
+            out.add(new Diff(Keys.WHITELIST, this.whitelist, neu.whitelist));
         if (this.cacheDuration != neu.cacheDuration)
-            out.add(new Diff("cache-duration", this.cacheDuration, neu.cacheDuration));
+            out.add(new Diff(Keys.CACHE_DURATION, this.cacheDuration, neu.cacheDuration));
         if (this.httpsOnly != neu.httpsOnly)
-            out.add(new Diff("https-only", this.httpsOnly, neu.httpsOnly));
+            out.add(new Diff(Keys.HTTPS_ONLY, this.httpsOnly, neu.httpsOnly));
         if (this.saveImages != neu.saveImages)
-            out.add(new Diff("save-images", this.saveImages, neu.saveImages));
+            out.add(new Diff(Keys.SAVE_IMAGES, this.saveImages, neu.saveImages));
         if (this.debug != neu.debug)
-            out.add(new Diff("debug-logging", this.debug, neu.debug));
+            out.add(new Diff(Keys.DEBUG_LOGGING, this.debug, neu.debug));
         if (this.cooldown != neu.cooldown)
-            out.add(new Diff("cooldown", this.cooldown, neu.cooldown));
+            out.add(new Diff(Keys.COOLDOWN, this.cooldown, neu.cooldown));
         if (this.opCooldown != neu.opCooldown)
-            out.add(new Diff("op-cooldown", this.opCooldown, neu.opCooldown));
+            out.add(new Diff(Keys.OP_COOLDOWN, this.opCooldown, neu.opCooldown));
         if (!this.maxSize.equals(neu.maxSize))
-            out.add(new Diff("max-size", this.maxSize, neu.maxSize));
+            out.add(new Diff(Keys.MAX_SIZE, this.maxSize, neu.maxSize));
         return out;
     }
 

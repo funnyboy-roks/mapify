@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -170,6 +171,14 @@ public class Util {
         return out;
     }
 
+    public static Integer tryParseInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     public static Point getDimensions(String str) {
         try {
             String[] parts = str.split("x");
@@ -206,6 +215,10 @@ public class Util {
         Image img = Mapify.INSTANCE.imageCache.get(getUrl(data.url));
         if (img == null) return null;
         return new CustomMapRenderer(img, data.x, data.y, data.scaleX, data.scaleY);
+    }
+
+    public static boolean isOperator(CommandSender player) {
+        return player.hasPermission("mapify.operator");
     }
 
     public static boolean isAllowed(URL url) {
