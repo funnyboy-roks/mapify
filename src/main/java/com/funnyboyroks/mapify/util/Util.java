@@ -104,6 +104,7 @@ public class Util {
             }
             return image;
         } catch (IOException e) {
+            e.printStackTrace();
             Mapify.INSTANCE.getLogger().severe("Invalid image url: " + url);
             return null;
         }
