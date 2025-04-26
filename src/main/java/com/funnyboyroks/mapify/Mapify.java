@@ -55,6 +55,22 @@ public final class Mapify extends JavaPlugin {
         this.commandManager = new CommandManager(this);
         Bukkit.getPluginManager().registerEvents(new Listeners(), this);
 
+        // Periodically save the data if changed (every 5 minutes)
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(
+            this,
+            () -> this.dataHandler.trySaveData(false),
+            5 * 60 * 20L,
+            5 * 60 * 20L
+        ); // 5 minutes * 60 seconds * 20 ticks
+
+        // Periodically force save the data (hourly)
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(
+            this,
+            () -> this.dataHandler.trySaveData(true),
+            (60 + 3) * 60 * 20L, // wait 63 minutes so the two tasks never run at the same time
+            60 * 60 * 20L
+        ); // 60 minutes * 60 seconds * 20 ticks
+
 
         try {
             this.loadConfig();
@@ -96,7 +112,7 @@ public final class Mapify extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            this.dataHandler.saveData();
+            this.dataHandler.saveData(true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

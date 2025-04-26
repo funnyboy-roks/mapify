@@ -136,6 +136,8 @@ public class Util {
 
         MapView view = Bukkit.getServer().createMap(Bukkit.getServer().getWorlds().get(0));
         Mapify.INSTANCE.dataHandler.data.mapData.put(view.getId(), new PluginData.MapData(url, x, y, w, h));
+        Mapify.INSTANCE.dataHandler.dirty();
+
 
         view.getRenderers().forEach(view::removeRenderer);
         MapRenderer renderer = Util.getRenderer(view);
@@ -209,6 +211,7 @@ public class Util {
     public static MapRenderer getRenderer(MapView view) {
 
         PluginData.MapData data = Mapify.INSTANCE.dataHandler.data.mapData.get(view.getId());
+        Mapify.INSTANCE.dataHandler.dirty();
 
         if (data == null) return null;
 
