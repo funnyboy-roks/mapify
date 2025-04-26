@@ -20,6 +20,9 @@ permissions:
   mapify.command.mapify.reload:
     default: op
     description: Permission to use the command `/mapify reload`
+  mapify.command.mapify.config:
+    default: op
+    description: Permission to use the command `/mapify config`
   mapify.command.refreshmaps:
     default: op
     description: Permission to use the command `/refreshmaps`

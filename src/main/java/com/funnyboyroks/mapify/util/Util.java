@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -103,6 +104,7 @@ public class Util {
             }
             return image;
         } catch (IOException e) {
+            e.printStackTrace();
             Mapify.INSTANCE.getLogger().severe("Invalid image url: " + url);
             return null;
         }
@@ -135,6 +137,8 @@ public class Util {
 
         MapView view = Bukkit.getServer().createMap(Bukkit.getServer().getWorlds().get(0));
         Mapify.INSTANCE.dataHandler.data.mapData.put(view.getId(), new PluginData.MapData(url, x, y, w, h));
+        Mapify.INSTANCE.dataHandler.dirty();
+
 
         view.getRenderers().forEach(view::removeRenderer);
         MapRenderer renderer = Util.getRenderer(view);
@@ -158,7 +162,7 @@ public class Util {
 
         var u = getUrl(url);
         if (u == null) return null;
-        var img = getImage(u);
+        var img = Mapify.INSTANCE.imageCache.get(u);
         if (img == null) return null;
 
         for (int y = 0; y < height; ++y) {
@@ -168,6 +172,14 @@ public class Util {
         }
 
         return out;
+    }
+
+    public static Integer tryParseInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public static Point getDimensions(String str) {
@@ -200,12 +212,17 @@ public class Util {
     public static MapRenderer getRenderer(MapView view) {
 
         PluginData.MapData data = Mapify.INSTANCE.dataHandler.data.mapData.get(view.getId());
+        Mapify.INSTANCE.dataHandler.dirty();
 
         if (data == null) return null;
 
         Image img = Mapify.INSTANCE.imageCache.get(getUrl(data.url));
         if (img == null) return null;
         return new CustomMapRenderer(img, data.x, data.y, data.scaleX, data.scaleY);
+    }
+
+    public static boolean isOperator(CommandSender player) {
+        return player.hasPermission("mapify.operator");
     }
 
     public static boolean isAllowed(URL url) {

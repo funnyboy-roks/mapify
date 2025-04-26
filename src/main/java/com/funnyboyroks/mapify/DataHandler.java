@@ -13,6 +13,7 @@ public class DataHandler {
     public Gson       gson     = new GsonBuilder().create();
     public File       dataFile = null;
     public PluginData data     = null;
+    public boolean    dirty = false;
 
     public DataHandler() {
         this.dataFile = new File(Mapify.INSTANCE.getDataFolder(), "data.json");
@@ -21,6 +22,10 @@ public class DataHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void dirty() {
+        this.dirty = true;
     }
 
     public void loadData() throws IOException {
@@ -34,7 +39,16 @@ public class DataHandler {
         }
     }
 
-    public void saveData() throws IOException {
+    public void trySaveData(boolean force) {
+        try {
+            this.saveData(force);
+        } catch (IOException ex) {
+            throw new RuntimeException("Error saving data file", ex);
+        }
+    }
+
+    public void saveData(boolean force) throws IOException {
+        if (!dirty && !force) return;
         if (Mapify.INSTANCE.config.debug) {
             Mapify.INSTANCE.getLogger().info("Saving data file...");
         }
