@@ -162,7 +162,7 @@ public class Util {
 
         var u = getUrl(url);
         if (u == null) return null;
-        var img = getImage(u);
+        var img = Mapify.INSTANCE.imageCache.get(u);
         if (img == null) return null;
 
         for (int y = 0; y < height; ++y) {
