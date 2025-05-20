@@ -35,13 +35,13 @@ public class Cache<K, V> {
      */
     public int clearExpired() {
         AtomicInteger count = new AtomicInteger(0);
-        for (K key : map.keySet()) {
-            CacheItem value = map.get(key);
-            if (value.isExpired()) {
-                map.remove(key);
+        map.entrySet().removeIf(value -> {
+            if (value.getValue().isExpired()) {
                 count.incrementAndGet();
+                return true;
             }
-        }
+            return false;
+        });
         return count.get();
     }
 
