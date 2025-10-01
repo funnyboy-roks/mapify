@@ -3,7 +3,6 @@ package com.funnyboyroks.mapify.command;
 import com.funnyboyroks.mapify.Mapify;
 import com.funnyboyroks.mapify.PluginConfig;
 import com.funnyboyroks.mapify.PluginConfig.Diff;
-import com.funnyboyroks.mapify.PluginConfig.Keys;
 import com.funnyboyroks.mapify.util.Util;
 import net.md_5.bungee.api.ChatColor;
 
@@ -50,6 +49,12 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
                 sender.sendMessage(ChatColor.YELLOW + d.key + ": " + ChatColor.AQUA + d.old + ChatColor.YELLOW + " → " + ChatColor.AQUA + d.neu);
             }
         }
+        Mapify.INSTANCE.getCommand("mapify")
+            .setPermission(
+                Mapify.INSTANCE.config.nonopMapify
+                ? null
+                : "mapify.command.mapify"
+            );
 
         return true;
     }
@@ -92,6 +97,22 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
                     sender.sendMessage(ChatColor.RED + "%s may only perform `add` or `remove`".formatted(field));
                     return true;
                 }
+            } break;
+            case PluginConfig.Keys.NON_OP_MAPIFY: {
+                if (args[1].equalsIgnoreCase("true")) {
+                    Mapify.INSTANCE.config.nonopMapify = true;
+                } else if (args[1].equalsIgnoreCase("false")) {
+                    Mapify.INSTANCE.config.nonopMapify = false;
+                } else {
+                    sender.sendMessage(ChatColor.RED + "%s may only be set to `true` or `false`".formatted(field));
+                    return true;
+                }
+                Mapify.INSTANCE.getCommand("mapify")
+                    .setPermission(
+                        Mapify.INSTANCE.config.nonopMapify
+                        ? null
+                        : "mapify.command.mapify"
+                    );
             } break;
             case PluginConfig.Keys.CACHE_DURATION: {
                 var n =  Util.tryParseInt(args[1]);
@@ -155,7 +176,7 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("mapify.command.mapify")) {
+        if (!Mapify.INSTANCE.config.nonopMapify && !sender.hasPermission("mapify.command.mapify")) {
             sender.sendMessage(ChatColor.RED + "You do not have permission to run this command.");
             return true;
         }
@@ -259,10 +280,10 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         return args.length == 2
-            ? sender.hasPermission("mapify.comamnd.mapify.reload") && args[0].equals("reload")
+            ? sender.hasPermission("mapify.command.mapify.reload") && args[0].equals("reload")
                 ? Collections.emptyList()
                 : List.of("1x1")
-            : sender.hasPermission("mapify.comamnd.mapify.reload")
+            : sender.hasPermission("mapify.command.mapify.reload")
                 ? List.of("reload")
                 : Collections.emptyList();
     }

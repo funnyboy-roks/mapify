@@ -1,18 +1,32 @@
 # Mapify Config
-# If you need any help or have any questions, feel free to ask on my Discord: https://discord.gg/qsUP2t5VpW
+# If you need any help or have any questions, feel free to ask on my Discord:
+# https://discord.gg/qsUP2t5VpW
 
 # If the following whitelist should be treated as a blacklist
 whitelist-is-blacklist: false
 
-# List of domains that are allowed for users to use.  Be VERY careful with what you allow with this, if users have full access, they can do malicious things.
-# This list also supports regular expressions if the entry starts with "REGEXP:", like this: REGEXP:.*\.google\.com, which allows any subdomain of google.com
-# Note: this filter only applies when the command is run, not when actually downloading the images on startup or world load.
-# Note: If no filtering is desired, then you can add "REGEXP:.*" to this list and all sites will be allowed
+# List of domains that are allowed for users to use.  Be VERY careful with what
+# you allow with this, if users have full access, they can do malicious things.
+# This list also supports regular expressions if the entry starts with
+# "REGEXP:", like this: REGEXP:.*\.google\.com, which allows any subdomain of
+# google.com
+# Note: this filter only applies when the command is run, not when actually
+#       downloading the images on startup or world load.
+# Note: If no filtering is desired, then you can add "REGEXP:.*" to this list
+#       and all sites will be allowed
 whitelist:
   - i.imgur.com
 
-# This makes it such that ALL provided urls must use https -- this isn't a perfect safeguard, as someone can proxy through an https server.
-# Note: this filter only applies when the command is run, not when actually downloading the images on startup or world load.
+# Whether non-operator players can use the `/mapify` command.
+# - When this is `true`, any player on the server can use the `/mapify` command.
+# - When this is `false, the player must have the `mapify.command.mapify`
+#   permission, which defaults to all operator players.
+non-op-mapify: false
+
+# This makes it such that ALL provided urls must use https -- this isn't a
+# perfect safeguard, as someone can proxy through an https server.
+# Note: this filter only applies when the command is run, not when actually
+#       downloading the images on startup or world load.
 https-only: true
 
 # The minutes that the plugin will cache the images
@@ -21,7 +35,8 @@ cache-duration: 60
 
 # Whether the plugin should download the images to the disk
 # Note: The images are saved in the `img/` folder with funky names.
-#       Do not change the names or the file info as that would mess up the storage method.
+#       Do not change the names or the file info as that would mess up the
+#       storage method.
 save-images: false
 
 # If debug messages should be printed.
@@ -34,8 +49,11 @@ cooldown: 0
 op-cooldown: 0
 
 # Maximum size of maps that may be generated.  This can be specified in two ways:
-# - Area: If max-size is specified as a single number, it will restrict map creation size by area.
+# - Disabled: If max-size is set to `-1`, no maximum size will be set.
+# - Area: If max-size is specified as a single number, it will restrict map
+#   creation size by area.
 #     i.e., if `max-size: 9`, then a map of size 3x4 is not valid.
-# - Bounds: If max-size is specifi as dimensions (WIDTHxHEIGHT), then it will be treated as upper bounds on the width and height
+# - Bounds: If max-size is specified as dimensions (WIDTHxHEIGHT), then it will
+#   be treated as upper bounds on the width and height
 #     i.e., if `max-size: 3x3`, then a map of size 3x4 is not valid.
 max-size: -1

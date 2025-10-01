@@ -52,6 +52,13 @@ public final class Mapify extends JavaPlugin {
         this.dataHandler = new DataHandler();
         int maps = dataHandler.data.mapData.size();
         this.getLogger().info("Loaded " + maps + " map" + (maps == 1 ? "" : "s") + ".");
+
+        try {
+            this.loadConfig();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         this.commandManager = new CommandManager(this);
         Bukkit.getPluginManager().registerEvents(new Listeners(), this);
 
@@ -71,12 +78,6 @@ public final class Mapify extends JavaPlugin {
             60 * 60 * 20L
         ); // 60 minutes * 60 seconds * 20 ticks
 
-
-        try {
-            this.loadConfig();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         // Clear the expired items every hour
         Bukkit.getScheduler().scheduleSyncRepeatingTask(
