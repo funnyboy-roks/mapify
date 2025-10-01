@@ -14,6 +14,7 @@ public class PluginConfig {
 
     public boolean      whitelistIsBlacklist;
     public List<String> whitelist;
+    public boolean      nonopMapify;
     public int          cacheDuration;
     public boolean      httpsOnly;
     public boolean      saveImages;
@@ -25,6 +26,7 @@ public class PluginConfig {
     public static class Keys {
         public static final String WHITELIST_IS_BLACKLIST = "whitelist-is-blacklist";
         public static final String WHITELIST = "whitelist";
+        public static final String NON_OP_MAPIFY = "non-op-mapify";
         public static final String CACHE_DURATION = "cache-duration";
         public static final String HTTPS_ONLY = "https-only";
         public static final String SAVE_IMAGES = "save-images";
@@ -43,6 +45,7 @@ public class PluginConfig {
         
         this.whitelistIsBlacklist = config.getBoolean(Keys.WHITELIST_IS_BLACKLIST, true);
         this.whitelist = config.getStringList(Keys.WHITELIST);
+        this.nonopMapify = config.getBoolean(Keys.NON_OP_MAPIFY);
         this.cacheDuration = config.getInt(Keys.CACHE_DURATION, 60);
         this.httpsOnly = config.getBoolean(Keys.HTTPS_ONLY, true);
         this.saveImages = config.getBoolean(Keys.SAVE_IMAGES, false);
@@ -60,6 +63,7 @@ public class PluginConfig {
         var config = plugin.getConfig();
         config.set(Keys.WHITELIST_IS_BLACKLIST, this.whitelistIsBlacklist);
         config.set(Keys.WHITELIST, this.whitelist);
+        config.set(Keys.NON_OP_MAPIFY, this.nonopMapify);
         config.set(Keys.CACHE_DURATION, this.cacheDuration);
         config.set(Keys.HTTPS_ONLY, this.httpsOnly);
         config.set(Keys.SAVE_IMAGES, this.saveImages);
@@ -89,6 +93,8 @@ public class PluginConfig {
             out.add(new Diff(Keys.WHITELIST_IS_BLACKLIST, this.whitelistIsBlacklist, neu.whitelistIsBlacklist));
         if (!this.whitelist.equals(neu.whitelist))
             out.add(new Diff(Keys.WHITELIST, this.whitelist, neu.whitelist));
+        if (this.nonopMapify != neu.nonopMapify)
+            out.add(new Diff(Keys.NON_OP_MAPIFY, this.nonopMapify, neu.nonopMapify));
         if (this.cacheDuration != neu.cacheDuration)
             out.add(new Diff(Keys.CACHE_DURATION, this.cacheDuration, neu.cacheDuration));
         if (this.httpsOnly != neu.httpsOnly)

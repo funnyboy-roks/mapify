@@ -10,6 +10,7 @@ public class CommandManager {
 
         PluginCommand commandMapify = plugin.getCommand("mapify");
         commandMapify.setExecutor(new CommandMapify());
+        if (plugin.config.nonopMapify) commandMapify.setPermission(null);
 
         PluginCommand refreshMaps = plugin.getCommand("refreshmaps");
         refreshMaps.setExecutor(new CommandRefreshMaps());
