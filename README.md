@@ -50,9 +50,9 @@ regular expression like `REGEXP:.*\.google\.com` to match all domains
 that end with `google.com`
 
 This is to help with security on your server as having untrusted domains
-can allow users to break your server and do bad things.  If you don't
-want this protection, you can add `"REGEXP:.*"` to the `whitelist` to
-disable the filtering.
+can allow users to download malicious software on your server.  If you
+don't want this protection, you can add `"REGEXP:.*"` to the `whitelist`
+in the config to disable the filtering.
 
 ### Error message of "An internal error occurred while attempting to perform this command"
 
