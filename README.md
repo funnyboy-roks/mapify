@@ -61,8 +61,6 @@ print to the console (usually red or yellow, if the console supports
 colour).  Please join my Discord, tell me what command you ran, and send
 the error message.
 
-<!-- MODRINTH_EXCLUDE_START -->
-
 ## Development
 
 To develop Mapify, you need to have maven installed on your computer.
@@ -70,5 +68,3 @@ To develop Mapify, you need to have maven installed on your computer.
 ```sh
 mvn package
 ```
-
-<!-- MODRINTH_EXCLUDE_END -->
