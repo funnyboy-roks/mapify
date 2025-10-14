@@ -4,6 +4,9 @@ Mapify is a plugin that is used to convert your images into Minecraft maps that 
 
 > For support, join my Discord: <https://discord.gg/qsUP2t5VpW>
 
+[![](./img/screenshot.png)](https://unsplash.com/photos/brown-and-black-mountain-under-white-clouds-80x3QULJDN4)
+> Photo is ["brown and black mountain under white clouds"](https://unsplash.com/photos/brown-and-black-mountain-under-white-clouds-80x3QULJDN4) by Tetiana Grypachevska
+
 ## Commands
 
 There are two commands: `/mapify` and `/refreshmaps`.
