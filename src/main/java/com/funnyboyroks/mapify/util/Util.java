@@ -185,9 +185,18 @@ public class Util {
         meta.setMapView(view);
 
 
-        List<String> lore = meta.getLore();
-        lore = lore == null ? new ArrayList<>() : lore;
-        lore.add(0, "Position: (" + x + ", " + y + ")");
+        List<String> lore = new ArrayList<>();
+        lore.add(0, ChatColor.RESET + "" + ChatColor.DARK_PURPLE + "Position: (" + x + ", " + y + ")");
+        // draw a little grid to show where each map should be placed.
+        if (h <= 10) {
+            for (int i = 0; i < h; ++i) {
+                if (i == y) {
+                    lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "█".repeat(x) + ChatColor.GREEN + "█" + ChatColor.GRAY + "█".repeat(w - x - 1) + ChatColor.RESET);
+                } else {
+                    lore.add(ChatColor.RESET + "" + ChatColor.GRAY + "█".repeat(w) + ChatColor.RESET);
+                }
+            }
+        }
         meta.setLore(lore);
 
         stack.setItemMeta(meta);
