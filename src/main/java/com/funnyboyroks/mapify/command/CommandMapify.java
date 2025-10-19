@@ -1,5 +1,6 @@
 package com.funnyboyroks.mapify.command;
 
+import com.funnyboyroks.mapify.FetchImageException;
 import com.funnyboyroks.mapify.Mapify;
 import com.funnyboyroks.mapify.PluginConfig;
 import com.funnyboyroks.mapify.PluginConfig.Diff;
@@ -254,25 +255,31 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        List<ItemStack> stacks = Util.getMaps(args[0], dims.x, dims.y);
+        try {
+            List<ItemStack> stacks = Util.getMaps(args[0], dims.x, dims.y);
 
-        if (stacks == null) {
-            player.sendMessage(ChatColor.RED + "This URL does not have an image.");
-            return true;
+            if (stacks == null) {
+                player.sendMessage(ChatColor.RED + "This URL does not have an image.");
+                return true;
+            }
+
+            int cooldown = sender.hasPermission("mapify.operator") ? Mapify.INSTANCE.config.opCooldown : Mapify.INSTANCE.config.cooldown;
+            if (cooldown > 0) {
+                long end = System.currentTimeMillis() + cooldown * 1000;
+                cooldownMap.put(player.getUniqueId(), end);
+                Bukkit.getScheduler().runTaskLater(Mapify.INSTANCE, () -> {
+                    cooldownMap.remove(player.getUniqueId());
+                }, cooldown * 20L);
+            }
+
+            Util.giveItems(player, stacks.toArray(ItemStack[]::new));
+
+            player.sendMessage(ChatColor.GREEN + "Given " + stacks.size() + " map" + (stacks.size() == 1 ? "." : "s."));
+        } catch (FetchImageException.NotFoundException e) {
+            player.sendMessage(ChatColor.RED + "Not file found at URL.");
+        } catch (FetchImageException.UnknownHostException e) {
+            player.sendMessage(ChatColor.RED + "Unknown host '" + e.url.getHost() + "'. This could be because it's invalid, or the server does not have access to it. Perhaps try a different URL.");
         }
-
-        int cooldown = sender.hasPermission("mapify.operator") ? Mapify.INSTANCE.config.opCooldown : Mapify.INSTANCE.config.cooldown;
-        if (cooldown > 0) {
-            long end = System.currentTimeMillis() + cooldown * 1000;
-            cooldownMap.put(player.getUniqueId(), end);
-            Bukkit.getScheduler().runTaskLater(Mapify.INSTANCE, () -> {
-                cooldownMap.remove(player.getUniqueId());
-            }, cooldown * 20L);
-        }
-
-        Util.giveItems(player, stacks.toArray(ItemStack[]::new));
-
-        player.sendMessage(ChatColor.GREEN + "Given " + stacks.size() + " map" + (stacks.size() == 1 ? "." : "s."));
 
         return true;
     }

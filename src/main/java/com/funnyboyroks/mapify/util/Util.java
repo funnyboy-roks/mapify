@@ -1,5 +1,6 @@
 package com.funnyboyroks.mapify.util;
 
+import com.funnyboyroks.mapify.FetchImageException;
 import com.funnyboyroks.mapify.Mapify;
 import com.funnyboyroks.mapify.PluginData;
 import com.google.gson.JsonArray;
@@ -18,10 +19,14 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -44,12 +49,12 @@ public class Util {
 
         return CompletableFuture.supplyAsync(() -> {
             try {
-                URL url = new URL("https://api.modrinth.com/v2/project/wsr1TOgJ");
+                URL url = new URI("https://api.modrinth.com/v2/project/wsr1TOgJ").toURL();
                 InputStreamReader reader = new InputStreamReader(url.openStream());
                 JsonArray versions = JsonParser.parseReader(reader).getAsJsonObject().getAsJsonArray("versions");
                 String version = versions.get(versions.size() - 1).getAsString();
 
-                url = new URL("https://api.modrinth.com/v2/version/" + version);
+                url = new URI("https://api.modrinth.com/v2/version/" + version).toURL();
                 reader = new InputStreamReader(url.openStream());
                 int latestVersion = Integer.parseInt(
                     JsonParser.parseReader(reader)
@@ -61,7 +66,7 @@ public class Util {
                 Mapify.INSTANCE.getLogger().info("Latest Version: " + latestVersion);
 
                 return latestVersion <= serverVersion;
-            } catch (IOException e) {
+            } catch (IOException | URISyntaxException e) {
                 Mapify.INSTANCE.getLogger().severe("Unable to contact Modrinth API to check version!");
                 return true;
             }
@@ -83,13 +88,23 @@ public class Util {
             Mapify.INSTANCE.getLogger().info("Fetching image from " + url);
         }
         File imgFile = Util.getImageFile(url);
+        boolean saveImage = Mapify.INSTANCE.config.saveImages;
         if (Mapify.INSTANCE.config.saveImages) {
             if (imgFile.exists()) {
+                Image img = null;
                 try {
-                    return ImageIO.read(imgFile);
+                    if (Mapify.INSTANCE.config.debug) {
+                        Mapify.INSTANCE.getLogger().info("Looking for image at: " + imgFile);
+                    }
+                    img = ImageIO.read(imgFile);
                 } catch (IOException e) {
+                    // img will be null, so we'll error
+                }
+                if (img == null) {
                     Mapify.INSTANCE.getLogger().severe(String.format("Invalid image on disk: %s\n\tThis file should be removed by the server owner.  Downloading image from url...", imgFile.getPath()));
-                    // This does not return so it downloads the image
+                    saveImage = false;
+                } else {
+                    return img;
                 }
             } else {
                 if (Mapify.INSTANCE.config.debug) {
@@ -99,13 +114,35 @@ public class Util {
         }
         try {
             Image image = ImageIO.read(url);
-            if (Mapify.INSTANCE.config.saveImages) {
+
+            if (image == null) {
+                Mapify.INSTANCE.getLogger().info("No image found at URL: " + url);
+                return null;
+            }
+
+            if (saveImage) {
                 ImageIO.write((RenderedImage) image, "png", imgFile);
             }
             return image;
         } catch (IOException e) {
-            e.printStackTrace();
             Mapify.INSTANCE.getLogger().severe("Invalid image url: " + url);
+            // Java is a horrible fucking languaage, nobody should be subject to this god-awful garbage.
+            Throwable cause = e.getCause();
+            if (cause == null) {
+                e.printStackTrace();
+            } else {
+                if (Mapify.INSTANCE.config.debug) e.printStackTrace();
+                if (cause instanceof UnknownHostException) {
+                    Mapify.INSTANCE.getLogger().severe("Invalid or unable to reach host: " + url.getHost());
+                    Mapify.INSTANCE.getLogger().severe("This may be because the server host that you're using doesn't allow connections to this website.  Try using a different image hosting site.");
+                    throw new FetchImageException.UnknownHostException(url);
+                } else if (cause instanceof FileNotFoundException) {
+                    Mapify.INSTANCE.getLogger().severe("Got a 404 while trying access url: " + url.getHost());
+                    throw new FetchImageException.NotFoundException(url);
+                } else {
+                    Mapify.INSTANCE.getLogger().severe("Cause: " + cause.getMessage());
+                }
+            }
             return null;
         }
     }
