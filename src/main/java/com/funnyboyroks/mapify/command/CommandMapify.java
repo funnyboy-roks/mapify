@@ -68,6 +68,16 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
         var field = args[0];
 
         switch (field) {
+            case PluginConfig.Keys.WHITELIST_DISABLED: {
+                if (args[1].equalsIgnoreCase("true")) {
+                    Mapify.INSTANCE.config.whitelistDisabled = true;
+                } else if (args[1].equalsIgnoreCase("false")) {
+                    Mapify.INSTANCE.config.whitelistDisabled = false;
+                } else {
+                    sender.sendMessage(ChatColor.RED + "%s may only be set to `true` or `false`".formatted(field));
+                    return true;
+                }
+            } break;
             case PluginConfig.Keys.WHITELIST_IS_BLACKLIST: {
                 if (args[1].equalsIgnoreCase("true")) {
                     Mapify.INSTANCE.config.whitelistIsBlacklist = true;

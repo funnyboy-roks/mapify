@@ -2,7 +2,13 @@
 # If you need any help or have any questions, feel free to ask on my Discord:
 # https://discord.gg/qsUP2t5VpW
 
-# If the following whitelist should be treated as a blacklist
+# Whether the whitelist functionality should be disabled.  If set to `true`,
+# this will allow any domain to be used to create a map.
+# This is highly discouraged, especially if you give `/mapify` permissions to
+# all players, as it presents an issue of security.
+whitelist-disabled: false
+
+# If the `whitelist` should be treated as a blacklist
 whitelist-is-blacklist: false
 
 # List of domains that are allowed for users to use.  Be VERY careful with what
@@ -12,8 +18,7 @@ whitelist-is-blacklist: false
 # google.com
 # Note: this filter only applies when the command is run, not when actually
 #       downloading the images on startup or world load.
-# Note: If no filtering is desired, then you can add "REGEXP:.*" to this list
-#       and all sites will be allowed
+# Note: If no filtering is desired, set `whitelist-disabled` to `true`.
 whitelist:
   - i.imgur.com
 

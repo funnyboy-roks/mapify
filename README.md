@@ -1,10 +1,15 @@
 # Mapify
 
-Mapify is a plugin that is used to convert your images into Minecraft maps that can be put in item frames or held in hand.
+Mapify is a plugin that is used to convert your images into Minecraft
+maps that can be placed in item frames or held in hand.
+
+To install the plugin, you need to add it into your `plugins/` folder
+and start the server.  This will generate a [config](#config) that you
+can configure and then reload with `/mapify reload`.
 
 > For support, join my Discord: <https://discord.gg/qsUP2t5VpW>
 
-[![](./img/screenshot.png)](https://unsplash.com/photos/brown-and-black-mountain-under-white-clouds-80x3QULJDN4)
+![](./img/screenshot.png)
 > Original photo is ["brown and black mountain under white clouds"](https://unsplash.com/photos/brown-and-black-mountain-under-white-clouds-80x3QULJDN4) by Tetiana Grypachevska
 
 ## Commands
@@ -33,7 +38,10 @@ radius.
 ## Config
 
 - Configurable whitelist using raw strings or regular expressions.
-- Configurable cache duration
+    - Regular Expressions are in the form of `REGEXP:.*\.example\.com`
+    - Whitelist can be treated as a blacklist with the
+      `whitelist-is-blacklist` field.
+- Configurable cooldown
 - Https only toggle
 
 ## Permissions
@@ -47,19 +55,35 @@ radius.
 
 ### Error message of "This is not a valid domain..."
 
-You need to edit the config and add the domain that you wish to the
-`whitelist` field.  You can add a domain, like `i.imgur.com` or a
-regular expression like `REGEXP:.*\.google\.com` to match all domains
-that end with `google.com`
+By default, the whitelist in the [`config.yml`](#config) needs to have
+every domain from which a map should be allowed to be loaded.  If you're
+a server admin, you can run `/mapify config whitelist add <domain>` as
+suggested in the command.
 
 This is to help with security on your server as having untrusted domains
 can allow users to download malicious software on your server.  If you
-don't want this protection, you can add `"REGEXP:.*"` to the `whitelist`
-in the config to disable the filtering.
+don't want this protection, set `whitelist-disabled` to `true` in the
+configuration.
 
 ### Error message of "An internal error occurred while attempting to perform this command"
 
-When this message occurs in chat, there's a large error message that will
-print to the console (usually red or yellow, if the console supports
-colour).  Please join my Discord, tell me what command you ran, and send
-the error message.
+Please join my Discord and give me the following information:
+- The large error message that was printed in the server console
+- The output of `/version`
+- The version of Mapify that you are using
+
+<!-- MODRINTH_EXCLUDE_START -->
+## Development
+
+To build the project, you'll need [maven](https://maven.apache.org/) and
+JDK 17 installed.
+
+Most Java IDEs support maven operations in them, but if you're using the
+terminal, you'll need to do the following:
+
+```sh
+mvn install # install dependencies
+mvn package # build project (into target/)
+```
+
+<!-- MODRINTH_EXCLUDE_END -->

@@ -12,6 +12,7 @@ public class PluginConfig {
 
     private final File configFile;
 
+    public boolean      whitelistDisabled;
     public boolean      whitelistIsBlacklist;
     public List<String> whitelist;
     public boolean      nonopMapify;
@@ -24,6 +25,7 @@ public class PluginConfig {
     public String       maxSize;
 
     public static class Keys {
+        public static final String WHITELIST_DISABLED = "whitelist-disabled";
         public static final String WHITELIST_IS_BLACKLIST = "whitelist-is-blacklist";
         public static final String WHITELIST = "whitelist";
         public static final String NON_OP_MAPIFY = "non-op-mapify";
@@ -43,6 +45,7 @@ public class PluginConfig {
 
         FileConfiguration config = plugin.getConfig();
         
+        this.whitelistDisabled = config.getBoolean(Keys.WHITELIST_DISABLED, false);
         this.whitelistIsBlacklist = config.getBoolean(Keys.WHITELIST_IS_BLACKLIST, true);
         this.whitelist = config.getStringList(Keys.WHITELIST);
         this.nonopMapify = config.getBoolean(Keys.NON_OP_MAPIFY);
@@ -61,6 +64,7 @@ public class PluginConfig {
 
     public void save(Mapify plugin) {
         var config = plugin.getConfig();
+        config.set(Keys.WHITELIST_DISABLED, this.whitelistDisabled);
         config.set(Keys.WHITELIST_IS_BLACKLIST, this.whitelistIsBlacklist);
         config.set(Keys.WHITELIST, this.whitelist);
         config.set(Keys.NON_OP_MAPIFY, this.nonopMapify);
@@ -89,6 +93,8 @@ public class PluginConfig {
 
     public List<Diff> diff(PluginConfig neu) {
         List<Diff> out = new ArrayList<>();
+        if (this.whitelistDisabled != neu.whitelistDisabled)
+            out.add(new Diff(Keys.WHITELIST_DISABLED, this.whitelistDisabled, neu.whitelistDisabled));
         if (this.whitelistIsBlacklist != neu.whitelistIsBlacklist)
             out.add(new Diff(Keys.WHITELIST_IS_BLACKLIST, this.whitelistIsBlacklist, neu.whitelistIsBlacklist));
         if (!this.whitelist.equals(neu.whitelist))

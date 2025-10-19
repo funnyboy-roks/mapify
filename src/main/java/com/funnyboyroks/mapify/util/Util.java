@@ -273,6 +273,7 @@ public class Util {
 
     public static boolean isAllowed(URL url) {
         String host = url.getHost();
+        if (Mapify.INSTANCE.config.whitelistDisabled) return true;
 
         List<String> whitelist = Mapify.INSTANCE.config.whitelist;
 
