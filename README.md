@@ -4,8 +4,8 @@ Mapify is a plugin that is used to convert your images into Minecraft
 maps that can be placed in item frames or held in hand.
 
 To install the plugin, you need to add it into your `plugins/` folder
-and start the server.  This will generate a [config](#config) that you
-can configure and then reload with `/mapify reload`.
+and start the server.  This will generate a `config.yml` that you
+can change and then reload with `/mapify reload`.
 
 > For support, join my Discord: <https://discord.gg/qsUP2t5VpW>
 
@@ -55,7 +55,7 @@ radius.
 
 ### Error message of "This is not a valid domain..."
 
-By default, the whitelist in the [`config.yml`](#config) needs to have
+By default, the whitelist in the `config.yml` needs to have
 every domain from which a map should be allowed to be loaded.  If you're
 a server admin, you can run `/mapify config whitelist add <domain>` as
 suggested in the command.
