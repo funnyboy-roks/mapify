@@ -4,6 +4,7 @@ import com.funnyboyroks.mapify.FetchImageException;
 import com.funnyboyroks.mapify.Mapify;
 import com.funnyboyroks.mapify.PluginConfig;
 import com.funnyboyroks.mapify.PluginConfig.Diff;
+import com.funnyboyroks.mapify.PluginConfig.Keys;
 import com.funnyboyroks.mapify.util.Util;
 import net.md_5.bungee.api.ChatColor;
 
@@ -18,12 +19,14 @@ import org.bukkit.inventory.ItemStack;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class CommandMapify implements CommandExecutor, TabCompleter {
 
@@ -296,12 +299,34 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        return args.length == 2
-            ? sender.hasPermission("mapify.command.mapify.reload") && args[0].equals("reload")
-                ? Collections.emptyList()
-                : List.of("1x1")
-            : sender.hasPermission("mapify.command.mapify.reload")
-                ? List.of("reload")
-                : Collections.emptyList();
+        return switch (args.length) {
+            case 1 -> {
+                List<String> options = new ArrayList<>();
+                if (sender.hasPermission("mapify.command.mapify.reload"))
+                    options.add("reload");
+                if (sender.hasPermission("mapify.command.mapify.config"))
+                    options.add("config");
+                options.removeIf(s -> !s.startsWith(args[0]));
+                yield options;
+            }
+            case 2 -> switch (args[0]) {
+                case "reload" -> Collections.emptyList();
+                case "config" -> sender.hasPermission("mapify.command.mapify.config")
+                    ? Arrays.stream(Keys.keys)
+                        .filter(s -> s.startsWith(args[1]))
+                        .collect(Collectors.toList())
+                    : List.of("1x1");
+                default -> List.of("1x1");
+            };
+            case 3 -> switch (args[0]) {
+                case "config" -> sender.hasPermission("mapify.command.mapify.config")
+                    ? Arrays.stream(Keys.optionsForKey(args[1]))
+                        .filter(s -> s.startsWith(args[2]))
+                        .collect(Collectors.toList())
+                    : Collections.emptyList();
+                default -> Collections.emptyList();
+            };
+            default -> Collections.emptyList();
+        };
     }
 }

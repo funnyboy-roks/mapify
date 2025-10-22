@@ -36,6 +36,38 @@ public class PluginConfig {
         public static final String COOLDOWN = "cooldown";
         public static final String OP_COOLDOWN = "op-cooldown";
         public static final String MAX_SIZE = "max-size";
+
+        public static final String[] keys = {
+            Keys.WHITELIST_DISABLED,
+            Keys.WHITELIST_IS_BLACKLIST,
+            Keys.WHITELIST,
+            Keys.NON_OP_MAPIFY,
+            Keys.CACHE_DURATION,
+            Keys.HTTPS_ONLY,
+            Keys.SAVE_IMAGES,
+            Keys.DEBUG_LOGGING,
+            Keys.COOLDOWN,
+            Keys.OP_COOLDOWN,
+            Keys.MAX_SIZE,
+        };
+
+        public static String[] optionsForKey(String key) {
+            final String[] bool = new String[] { "true", "false" };
+            return switch (key) {
+                case Keys.WHITELIST_DISABLED -> bool;
+                case Keys.WHITELIST_IS_BLACKLIST -> bool;
+                case Keys.WHITELIST -> new String[] { "add", "remove" };
+                case Keys.NON_OP_MAPIFY -> bool;
+                case Keys.CACHE_DURATION -> new String[] { };
+                case Keys.HTTPS_ONLY -> bool;
+                case Keys.SAVE_IMAGES -> bool;
+                case Keys.DEBUG_LOGGING -> bool;
+                case Keys.COOLDOWN -> new String[] { };
+                case Keys.OP_COOLDOWN -> new String[] { };
+                case Keys.MAX_SIZE -> new String[] { };
+                default -> new String[0];
+            };
+        }
     }
 
     public PluginConfig(Mapify plugin) throws IOException {
