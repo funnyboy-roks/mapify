@@ -3,6 +3,7 @@ package com.funnyboyroks.mapify.util;
 import com.funnyboyroks.mapify.FetchImageException;
 import com.funnyboyroks.mapify.Mapify;
 import com.funnyboyroks.mapify.PluginData;
+import com.funnyboyroks.mapify.util.ColourUtil.RgbInt;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import net.md_5.bungee.api.ChatColor;
@@ -12,11 +13,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -83,7 +86,64 @@ public class Util {
         }
     }
 
-    public static Image getImage(URL url) {
+    public static int clamp(int n, int min, int max) {
+        return Math.min(Math.max(n, min), max);
+    }
+
+    public static Image dither(BufferedImage image) {
+        RgbInt[] buffer = new RgbInt[image.getWidth()*image.getHeight()];
+        for (int i = 0; i < buffer.length; ++i) {
+            int pixel = image.getRGB(i % image.getWidth(), i / image.getWidth());
+            buffer[i] = new RgbInt((pixel >> 16) & 0xff, (pixel >> 8) & 0xff, (pixel >> 0) & 0xff, 255);
+        }
+
+
+        for (int i = 0; i < buffer.length; ++i) {
+            int x = i % image.getWidth();
+            int y = i / image.getWidth();
+            RgbInt pixel = buffer[i];
+            byte b = MapPalette.matchColor(
+                clamp(pixel.r(), 0, 255),
+                clamp(pixel.g(), 0, 255),
+                clamp(pixel.b(), 0, 255)
+            );
+            Color c = MapPalette.getColor(b);
+            buffer[i] = new RgbInt(c.getRed(), c.getGreen(), c.getBlue(), 255);
+
+            int quantRed = pixel.r() - c.getRed();
+            int quantGreen = pixel.g() - c.getGreen();
+            int quantBlue = pixel.b() - c.getBlue();
+
+            int index;
+
+            index = (y+0)*image.getWidth() + (x+1);
+            if (index >= 0 && index < buffer.length) buffer[index] = buffer[index].add(quantRed, quantGreen, quantBlue, 7, 16);
+
+            index = (y+1)*image.getWidth() + (x-1);
+            if (index >= 0 && index < buffer.length) buffer[index] = buffer[index].add(quantRed, quantGreen, quantBlue, 3, 16);
+
+            index = (y+1)*image.getWidth() + (x+0);
+            if (index >= 0 && index < buffer.length) buffer[index] = buffer[index].add(quantRed, quantGreen, quantBlue, 5, 16);
+
+            index = (y+1)*image.getWidth() + (x+1);
+            if (index >= 0 && index < buffer.length) buffer[index] = buffer[index].add(quantRed, quantGreen, quantBlue, 1, 16);
+        }
+
+        for (int i = 0; i < buffer.length; i++) {
+            RgbInt rgb = buffer[i];
+            image.setRGB(
+                    i % image.getWidth(),
+                    i / image.getWidth(),
+                    clamp(rgb.a(), 0, 255) << 24
+                    | clamp(rgb.r(), 0, 255) << 16
+                    | clamp(rgb.g(), 0, 255) << 8
+                    | clamp(rgb.b(), 0, 255)
+            );
+        }
+        return image;
+    }
+
+    public static BufferedImage getImage(URL url) {
         if (Mapify.INSTANCE.config.debug) {
             Mapify.INSTANCE.getLogger().info("Fetching image from " + url);
         }
@@ -91,7 +151,7 @@ public class Util {
         boolean saveImage = Mapify.INSTANCE.config.saveImages;
         if (Mapify.INSTANCE.config.saveImages) {
             if (imgFile.exists()) {
-                Image img = null;
+                BufferedImage img = null;
                 try {
                     if (Mapify.INSTANCE.config.debug) {
                         Mapify.INSTANCE.getLogger().info("Looking for image at: " + imgFile);
@@ -113,7 +173,7 @@ public class Util {
             }
         }
         try {
-            Image image = ImageIO.read(url);
+            BufferedImage image = ImageIO.read(url);
 
             if (image == null) {
                 Mapify.INSTANCE.getLogger().info("No image found at URL: " + url);

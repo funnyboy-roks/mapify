@@ -11,12 +11,13 @@ import java.awt.image.BufferedImage;
 public class CustomMapRenderer extends MapRenderer {
 
     private final BufferedImage image;
+    private final int MAP_SIZE = 128;
 
     public CustomMapRenderer(Image image, int x, int y, int scaleX, int scaleY) {
-        BufferedImage img = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
+       BufferedImage img = new BufferedImage(MAP_SIZE, MAP_SIZE, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
-        var scaled = image.getScaledInstance(scaleX * 128, scaleY * 128, Image.SCALE_DEFAULT);
-        g.drawImage(scaled, -x * 128, -y * 128, null);
+        var scaled = image.getScaledInstance(scaleX * MAP_SIZE, scaleY * MAP_SIZE, Image.SCALE_DEFAULT);
+        g.drawImage(scaled, -x * MAP_SIZE, -y * MAP_SIZE, null);
         g.dispose();
         this.image = img;
     }

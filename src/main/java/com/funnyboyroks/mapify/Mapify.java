@@ -104,7 +104,9 @@ public final class Mapify extends JavaPlugin {
         }
 
         if (this.imageCache == null) {
-            this.imageCache = new Cache<>((long) this.config.cacheDuration * 60 * 1000, Util::getImage);
+            this.imageCache = new Cache<>((long) this.config.cacheDuration * 60 * 1000, (URL url) -> {
+                return Util.dither(Util.getImage(url));
+            });
         } else {
             this.imageCache.setCacheDuration(this.config.cacheDuration * 60 * 1000);
         }
