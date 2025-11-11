@@ -9,7 +9,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
     - uses: actions/checkout@v5
-    - uses: naineel1209@feat/produce-error-for-unbalanced-excluded-sections
+    - uses: naineel1209/modrinth-auto-desc@feat/produce-error-for-unbalanced-excluded-sections
       with:
         auth-token: ${{ secrets.MODRINTH_AUTH_TOKEN }}
         slug: 'mapify'
