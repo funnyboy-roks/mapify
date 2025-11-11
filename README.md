@@ -86,4 +86,4 @@ mvn install # install dependencies
 mvn package # build project (into target/)
 ```
 
-<!-- MODRINTH_EXCLUDE_E -->
+<!-- MODRINTH_EXCLUDE_END -->
