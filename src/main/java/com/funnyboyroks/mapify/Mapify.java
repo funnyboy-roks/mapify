@@ -32,10 +32,16 @@ public final class Mapify extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
+            this.loadConfig();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
             Util.isLatestVersion().thenAccept((latest) -> {
                 if (!latest) {
-                    this.getLogger().warning("Mapify has an update!");
-                    this.getLogger().warning("Get it from https://modrinth.com/plugin/mapify");
+                    this.getLogger().warning(this.config.languageManager.getMessage("update_available"));
+                    this.getLogger().warning(this.config.languageManager.getMessage("update_download"));
                 }
             }).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -47,17 +53,11 @@ public final class Mapify extends JavaPlugin {
         metrics.addCustomChart(new SingleLineChart("maps", () -> Mapify.INSTANCE.dataHandler.data.mapData.size()));
         metrics.addCustomChart(new SimplePie("blacklist", () -> Mapify.INSTANCE.config.whitelistIsBlacklist + ""));
         metrics.addCustomChart(new AdvancedPie("whitelist", () -> Mapify.INSTANCE.config.whitelist.stream().collect(Collectors.toMap(k -> k, v -> 1))));
-        this.getLogger().info("Metrics loaded.");
+        this.getLogger().info(this.config.languageManager.getMessage("metrics_loaded"));
 
         this.dataHandler = new DataHandler();
         int maps = dataHandler.data.mapData.size();
-        this.getLogger().info("Loaded " + maps + " map" + (maps == 1 ? "" : "s") + ".");
-
-        try {
-            this.loadConfig();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.getLogger().info(this.config.languageManager.getMessage("maps_loaded", maps, maps == 1 ? "" : "s"));
 
         this.commandManager = new CommandManager(this);
         Bukkit.getPluginManager().registerEvents(new Listeners(), this);
@@ -98,7 +98,7 @@ public final class Mapify extends JavaPlugin {
             if (!imgDir.exists()) {
                 boolean mkdir = imgDir.mkdirs();
                 if (!mkdir) {
-                    this.getLogger().severe("Unable to create img directory.");
+                    this.getLogger().severe(this.config.languageManager.getMessage("unable_to_create_img_dir"));
                 }
             }
         }
