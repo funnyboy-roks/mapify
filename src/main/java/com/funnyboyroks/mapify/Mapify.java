@@ -40,8 +40,8 @@ public final class Mapify extends JavaPlugin {
         try {
             Util.isLatestVersion().thenAccept((latest) -> {
                 if (!latest) {
-                    this.getLogger().warning(this.config.languageManager.getMessage("update_available"));
-                    this.getLogger().warning(this.config.languageManager.getMessage("update_download"));
+                    this.getLogger().warning(this.config.languageManager.getMessage("system.update-available"));
+                    this.getLogger().warning(this.config.languageManager.getMessage("system.update-download"));
                 }
             }).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -53,11 +53,11 @@ public final class Mapify extends JavaPlugin {
         metrics.addCustomChart(new SingleLineChart("maps", () -> Mapify.INSTANCE.dataHandler.data.mapData.size()));
         metrics.addCustomChart(new SimplePie("blacklist", () -> Mapify.INSTANCE.config.whitelistIsBlacklist + ""));
         metrics.addCustomChart(new AdvancedPie("whitelist", () -> Mapify.INSTANCE.config.whitelist.stream().collect(Collectors.toMap(k -> k, v -> 1))));
-        this.getLogger().info(this.config.languageManager.getMessage("metrics_loaded"));
+        this.getLogger().info(this.config.languageManager.getMessage("system.metrics-loaded"));
 
         this.dataHandler = new DataHandler();
         int maps = dataHandler.data.mapData.size();
-        this.getLogger().info(this.config.languageManager.getMessage("maps_loaded", maps, maps == 1 ? "" : "s"));
+        this.getLogger().info(this.config.languageManager.getMessage("system.maps-loaded", maps, maps == 1 ? "" : "s"));
 
         this.commandManager = new CommandManager(this);
         Bukkit.getPluginManager().registerEvents(new Listeners(), this);
@@ -98,7 +98,7 @@ public final class Mapify extends JavaPlugin {
             if (!imgDir.exists()) {
                 boolean mkdir = imgDir.mkdirs();
                 if (!mkdir) {
-                    this.getLogger().severe(this.config.languageManager.getMessage("unable_to_create_img_dir"));
+                    this.getLogger().severe(this.config.languageManager.getMessage("system.unable-to-create-img-dir"));
                 }
             }
         }
