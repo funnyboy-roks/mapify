@@ -37,7 +37,7 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
         try {
             Mapify.INSTANCE.config.reload();
         } catch (IOException e) {
-            sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("reload_error", e.getMessage()));
+            sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.reload.error", e.getMessage()));
             e.printStackTrace();
             return true;
         }
@@ -45,9 +45,9 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
         var diff = oldConfig.diff(Mapify.INSTANCE.config);
 
         if (diff.isEmpty()) {
-            sender.sendMessage(ChatColor.GREEN + Mapify.INSTANCE.config.languageManager.getMessage("reload_success"));
+            sender.sendMessage(ChatColor.GREEN + Mapify.INSTANCE.config.languageManager.getMessage("command.reload.success"));
         } else {
-            sender.sendMessage(ChatColor.GREEN + Mapify.INSTANCE.config.languageManager.getMessage("reload_success_changes"));
+            sender.sendMessage(ChatColor.GREEN + Mapify.INSTANCE.config.languageManager.getMessage("command.reload.success.changes"));
             for (Diff d : diff) {
                 sender.sendMessage(ChatColor.YELLOW + d.key + ": " + ChatColor.AQUA + d.old + ChatColor.YELLOW + " → " + ChatColor.AQUA + d.neu);
             }
@@ -76,7 +76,7 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
                 } else if (args[1].equalsIgnoreCase("false")) {
                     Mapify.INSTANCE.config.whitelistDisabled = false;
                 } else {
-                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("config_field_invalid", field));
+                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.config.field-invalid", field));
                     return true;
                 }
             } break;
@@ -86,13 +86,13 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
                 } else if (args[1].equalsIgnoreCase("false")) {
                     Mapify.INSTANCE.config.whitelistIsBlacklist = false;
                 } else {
-                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("config_field_invalid", field));
+                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.config.field-invalid", field));
                     return true;
                 }
             } break;
             case PluginConfig.Keys.WHITELIST: {
                 if (args.length < 3) {
-                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("config_field_invalid_usage", field));
+                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.config.field.invalid-usage", field));
                     return true;
                 }
 
@@ -107,7 +107,7 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
                 } else if (args[1].equalsIgnoreCase("remove")) {
                     Mapify.INSTANCE.config.whitelist.remove(host);
                 } else {
-                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("config_field_invalid_option", field));
+                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.config.field.invalid-option", field));
                     return true;
                 }
             } break;
@@ -117,7 +117,7 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
                 } else if (args[1].equalsIgnoreCase("false")) {
                     Mapify.INSTANCE.config.nonopMapify = false;
                 } else {
-                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("config_field_invalid", field));
+                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.config.field-invalid", field));
                     return true;
                 }
                 Mapify.INSTANCE.getCommand("mapify")
@@ -130,7 +130,7 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
             case PluginConfig.Keys.CACHE_DURATION: {
                 var n =  Util.tryParseInt(args[1]);
                 if (n == null) {
-                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("config_field_invalid_int", field));
+                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.config.field.invalid-int", field));
                     return true;
                 } else {
                     Mapify.INSTANCE.config.cacheDuration = n;
@@ -142,7 +142,7 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
                 } else if (args[1].equalsIgnoreCase("false")) {
                     Mapify.INSTANCE.config.saveImages = false;
                 } else {
-                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("config_field_invalid", field));
+                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.config.field-invalid", field));
                     return true;
                 }
             } break;
@@ -152,14 +152,14 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
                 } else if (args[1].equalsIgnoreCase("false")) {
                     Mapify.INSTANCE.config.debug = false;
                 } else {
-                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("config_field_invalid", field));
+                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.config.field-invalid", field));
                     return true;
                 }
             } break;
             case PluginConfig.Keys.COOLDOWN: {
                 var n =  Util.tryParseInt(args[1]);
                 if (n == null) {
-                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("config_field_invalid_int", field));
+                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.config.field.invalid-int", field));
                     return true;
                 } else {
                     Mapify.INSTANCE.config.cooldown = n;
@@ -168,7 +168,7 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
             case PluginConfig.Keys.OP_COOLDOWN: {
                 var n =  Util.tryParseInt(args[1]);
                 if (n == null) {
-                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("config_field_invalid_int", field));
+                    sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.config.field.invalid-int", field));
                     return true;
                 } else {
                     Mapify.INSTANCE.config.opCooldown = n;
@@ -178,11 +178,11 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
                 Mapify.INSTANCE.config.maxSize = args[1];
             } break;
             default: {
-                sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("config_unknown_field", field));
+                sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.config.field.unknown", field));
             } break;
         }
         Mapify.INSTANCE.config.save(Mapify.INSTANCE);
-        sender.sendMessage(ChatColor.GREEN + Mapify.INSTANCE.config.languageManager.getMessage("config_updated"));
+        sender.sendMessage(ChatColor.GREEN + Mapify.INSTANCE.config.languageManager.getMessage("command.config.updated"));
 
         return true;
     }
@@ -190,13 +190,13 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!Mapify.INSTANCE.config.nonopMapify && !sender.hasPermission("mapify.command.mapify")) {
-            sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("no_permission"));
+            sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.no-permission"));
             return true;
         }
 
         if (args.length == 1 && args[0].equals("reload")) {
             if (!sender.hasPermission("mapify.command.mapify.reload")) {
-                sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("no_permission"));
+                sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.no-permission"));
                 return true;
             }
             return reloadConfig(sender);
@@ -204,15 +204,14 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
 
         if (args.length >= 1 && args[0].equals("config")) {
             if (!sender.hasPermission("mapify.command.mapify.config")) {
-                sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("no_permission"));
+                sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.no-permission"));
                 return true;
             }
-            ;
             return commandConfig(sender, Arrays.copyOfRange(args, 1, args.length));
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("player_only"));
+            sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.player-only"));
             return true;
         }
 
@@ -222,7 +221,7 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
             long current = System.currentTimeMillis();
             long remaining = (cdEnd - current) / 1000;
             if (remaining > 0) {
-                sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("cooldown", remaining));
+                sender.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.cooldown", remaining));
                 return true;
             }
         }
@@ -234,22 +233,22 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
         URL url = Util.getUrl(args[0]);
 
         if (url == null) {
-            player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("invalid_url"));
+            player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.url.invalid"));
             return true;
         }
 
         if (!Util.isAllowed(url)) {
             if (Util.isOperator(player)) {
-                player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("domain_not_whitelisted_op"));
-                player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("domain_not_whitelisted_op_suggestion", url.getHost()));
+                player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.domain.not-whitelisted.op"));
+                player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.domain.not-whitelisted.op", url.getHost()));
             } else {
-                player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("domain_not_whitelisted"));
+                player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.domain.not-whitelisted"));
             }
             return true;
         }
 
         if (!url.getProtocol().equalsIgnoreCase("https") && Mapify.INSTANCE.config.httpsOnly) {
-            player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("not_https"));
+            player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.not-https"));
             return true;
         }
 
@@ -257,13 +256,13 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
         if (args.length == 2) {
             dims = Util.getDimensions(args[1]);
             if (dims == null) {
-                player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("invalid_dimensions"));
+                player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.dimensions.invalid"));
                 return true;
             }
         }
 
         if (!Util.dimsMatch(dims, Mapify.INSTANCE.config.maxSize)) {
-            player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("dimensions_too_large"));
+            player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.dimensions.too-large"));
             return true;
         }
 
@@ -271,7 +270,7 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
             List<ItemStack> stacks = Util.getMaps(args[0], dims.x, dims.y);
 
             if (stacks == null) {
-                player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("no_image"));
+                player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.no-image"));
                 return true;
             }
 
@@ -286,11 +285,11 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
 
             Util.giveItems(player, stacks.toArray(ItemStack[]::new));
 
-            player.sendMessage(ChatColor.GREEN + Mapify.INSTANCE.config.languageManager.getMessage("maps_given", stacks.size(), stacks.size() == 1 ? "" : "s"));
+            player.sendMessage(ChatColor.GREEN + Mapify.INSTANCE.config.languageManager.getMessage("command.maps-given", stacks.size(), stacks.size() == 1 ? "" : "s"));
         } catch (FetchImageException.NotFoundException e) {
-            player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("not_found"));
+            player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.not-found"));
         } catch (FetchImageException.UnknownHostException e) {
-            player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("unknown_host", e.url.getHost()));
+            player.sendMessage(ChatColor.RED + Mapify.INSTANCE.config.languageManager.getMessage("command.unknown-host", e.url.getHost()));
         }
 
         return true;

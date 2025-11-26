@@ -91,7 +91,7 @@ public class PluginConfig {
         this.opCooldown = config.getInt(Keys.OP_COOLDOWN, 0);
         this.maxSize = config.getString(Keys.MAX_SIZE, "");
         
-        // Inisialisasi language manager
+        // Initialize language manager
         this.languageManager = new LanguageManager(plugin);
     }
 
@@ -100,7 +100,7 @@ public class PluginConfig {
     }
     
     /**
-     * Memuat ulang konfigurasi dan file bahasa
+     * Reload configuration and language file
      */
     public void reload() throws IOException {
         Mapify.INSTANCE.reloadConfig();

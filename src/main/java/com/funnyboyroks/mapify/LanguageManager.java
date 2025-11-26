@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Kelas untuk mengelola pesan-pesan bahasa dari file lang.yml
- * Memungkinkan admin server untuk mengubah teks pesan sesuai keinginan
+ * Class for managing language messages from lang.yml file
+ * Allows server administrators to customize message text as desired
  */
 public class LanguageManager {
     
@@ -25,68 +25,49 @@ public class LanguageManager {
     }
     
     /**
-     * Memuat file bahasa dari lang.yml
+     * Loads the language file from lang.yml
      */
     public void loadLanguageFile() {
         File langFile = new File(plugin.getDataFolder(), "lang.yml");
         
-        // Jika file tidak ada, salin dari resources
+        // If file doesn't exist, copy from resources
         if (!langFile.exists()) {
             plugin.saveResource("lang.yml", false);
         }
         
-        // Load konfigurasi
+        // Load configuration
         langConfig = YamlConfiguration.loadConfiguration(langFile);
         
-        // Load semua pesan ke map untuk akses cepat
+        // Load all messages to map for fast access
         loadMessages();
     }
     
     /**
-     * Memuat semua pesan dari konfigurasi ke map
+     * Loads all messages from configuration to map
      */
     private void loadMessages() {
         messages.clear();
         
-        // Load command messages
-        if (langConfig.contains("command")) {
-            for (String key : langConfig.getConfigurationSection("command").getKeys(false)) {
-                String fullPath = "command." + key;
-                messages.put(key, langConfig.getString(fullPath));
-            }
-        }
-        
-        // Load config messages
-        if (langConfig.contains("config")) {
-            for (String key : langConfig.getConfigurationSection("config").getKeys(false)) {
-                String fullPath = "config." + key;
-                messages.put(key, langConfig.getString(fullPath));
-            }
-        }
-        
-        // Load system messages
-        if (langConfig.contains("system")) {
-            for (String key : langConfig.getConfigurationSection("system").getKeys(false)) {
-                String fullPath = "system." + key;
-                messages.put(key, langConfig.getString(fullPath));
-            }
+        // Load all messages using flat dot notation keys
+        for (String key : langConfig.getKeys(false)) {
+            messages.put(key, langConfig.getString(key));
         }
     }
     
     /**
-     * Mendapatkan pesan berdasarkan key
-     * @param key Key pesan yang ingin diambil
-     * @return Pesan yang sesuai, atau key jika tidak ditemukan
+     * Gets message based on key
+     * @param key Key of the message to retrieve
+     * @return Appropriate message, or key if not found
      */
     public String getMessage(String key) {
         return messages.getOrDefault(key, key);
     }
     
     /**
-     * Mendapatkan pesan berdasarkan key dengan format
-     * @param key Key pesan yang ingin diambil
-     * @param args Argumen untuk format pesan
-     * @return Pesan yang sudah diformat, atau key jika tidak ditemukan
+     * Gets message based on key with formatting
+     * @param key Key of the message to retrieve
+     * @param args Arguments for message formatting
+     * @return Formatted message, or key if not found
      */
     public String getMessage(String key, Object... args) {
         String message = getMessage(key);
@@ -99,10 +80,10 @@ public class LanguageManager {
     }
     
     /**
-     * Mendapatkan pesan berdasarkan key dengan format dan placeholder
-     * @param key Key pesan yang ingin diambil
+     * Gets message based on key with formatting and placeholders
+     * @param key Key of the message to retrieve
      * @param placeholders Map of placeholders to replace
-     * @return Pesan yang sudah diformat, atau key jika tidak ditemukan
+     * @return Formatted message, or key if not found
      */
     public String getMessage(String key, Map<String, String> placeholders) {
         String message = getMessage(key);
@@ -113,8 +94,8 @@ public class LanguageManager {
     }
     
     /**
-     * Memuat ulang file bahasa
-     * Digunakan saat perintah /mapify reload dijalankan
+     * Reloads the language file
+     * Used when /mapify reload command is executed
      */
     public void reload() {
         loadLanguageFile();
