@@ -23,6 +23,8 @@ public class PluginConfig {
     public int          cooldown;
     public int          opCooldown;
     public String       maxSize;
+    
+    public LanguageManager languageManager;
 
     public static class Keys {
         public static final String WHITELIST_DISABLED = "whitelist-disabled";
@@ -88,10 +90,36 @@ public class PluginConfig {
         this.cooldown = config.getInt(Keys.COOLDOWN, 0);
         this.opCooldown = config.getInt(Keys.OP_COOLDOWN, 0);
         this.maxSize = config.getString(Keys.MAX_SIZE, "");
+        
+        // Initialize language manager
+        this.languageManager = new LanguageManager(plugin);
     }
 
     public void update() throws IOException {
         ConfigUpdater.update(Mapify.INSTANCE, "config.yml", this.configFile);
+    }
+    
+    /**
+     * Reload configuration and language file
+     */
+    public void reload() throws IOException {
+        Mapify.INSTANCE.reloadConfig();
+        this.languageManager.reload();
+        
+        // Reload configuration values
+        FileConfiguration config = Mapify.INSTANCE.getConfig();
+        
+        this.whitelistDisabled = config.getBoolean(Keys.WHITELIST_DISABLED, false);
+        this.whitelistIsBlacklist = config.getBoolean(Keys.WHITELIST_IS_BLACKLIST, true);
+        this.whitelist = config.getStringList(Keys.WHITELIST);
+        this.nonopMapify = config.getBoolean(Keys.NON_OP_MAPIFY);
+        this.cacheDuration = config.getInt(Keys.CACHE_DURATION, 60);
+        this.httpsOnly = config.getBoolean(Keys.HTTPS_ONLY, true);
+        this.saveImages = config.getBoolean(Keys.SAVE_IMAGES, false);
+        this.debug = config.getBoolean(Keys.DEBUG_LOGGING, false);
+        this.cooldown = config.getInt(Keys.COOLDOWN, 0);
+        this.opCooldown = config.getInt(Keys.OP_COOLDOWN, 0);
+        this.maxSize = config.getString(Keys.MAX_SIZE, "");
     }
 
     public void save(Mapify plugin) {
