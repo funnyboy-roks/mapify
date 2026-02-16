@@ -126,22 +126,23 @@ public class Util {
             return image;
         } catch (IOException e) {
             Mapify.INSTANCE.getLogger().severe("Invalid image url: " + url);
-            // Java is a horrible fucking languaage, nobody should be subject to this god-awful garbage.
-            Throwable cause = e.getCause();
-            if (cause == null) {
+            // Check if the exception is a 404 error
+            String message = e.getMessage();
+            if (message != null && message.contains("404")) {
+                Mapify.INSTANCE.getLogger().severe("Got a 404 while trying access url: " + url);
+                throw new FetchImageException.NotFoundException(url);
+            }
+            // Check for unknown host exception
+            if (e instanceof UnknownHostException || (e.getCause() != null && e.getCause() instanceof UnknownHostException)) {
+                Mapify.INSTANCE.getLogger().severe("Invalid or unable to reach host: " + url.getHost());
+                Mapify.INSTANCE.getLogger().severe("This may be because the server host that you're using doesn't allow connections to this website.  Try using a different image hosting site.");
+                throw new FetchImageException.UnknownHostException(url);
+            }
+            // Print other exceptions
+            if (Mapify.INSTANCE.config.debug) {
                 e.printStackTrace();
             } else {
-                if (Mapify.INSTANCE.config.debug) e.printStackTrace();
-                if (cause instanceof UnknownHostException) {
-                    Mapify.INSTANCE.getLogger().severe("Invalid or unable to reach host: " + url.getHost());
-                    Mapify.INSTANCE.getLogger().severe("This may be because the server host that you're using doesn't allow connections to this website.  Try using a different image hosting site.");
-                    throw new FetchImageException.UnknownHostException(url);
-                } else if (cause instanceof FileNotFoundException) {
-                    Mapify.INSTANCE.getLogger().severe("Got a 404 while trying access url: " + url.getHost());
-                    throw new FetchImageException.NotFoundException(url);
-                } else {
-                    Mapify.INSTANCE.getLogger().severe("Cause: " + cause.getMessage());
-                }
+                Mapify.INSTANCE.getLogger().severe("Error: " + e.getMessage());
             }
             return null;
         }
@@ -321,5 +322,21 @@ public class Util {
         }
 
         return area <= 0 || dims.x * dims.y <= area;
+    }
+
+    /**
+     * Remove all old maps from the plugin data
+     */
+    public static void removeOldMaps() {
+        // Clear the map data
+        Mapify.INSTANCE.dataHandler.data.mapData.clear();
+        // Save the changes
+        Mapify.INSTANCE.dataHandler.dirty();
+        try {
+            Mapify.INSTANCE.dataHandler.saveData(true);
+        } catch (IOException e) {
+            Mapify.INSTANCE.getLogger().severe("Error saving data after removing old maps:");
+            e.printStackTrace();
+        }
     }
 }
