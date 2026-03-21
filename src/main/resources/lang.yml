@@ -1,0 +1,33 @@
+# Mapify Language File
+# This file contains all messages that can be customized by server administrators
+
+# Command messages
+command.no-permission = "&cYou do not have permission to run this command."
+command.player-only = "&cThis command can only be used in-game."
+command.url.invalid = "&cPlease specify a valid URL."
+command.dimensions.invalid = "&cInvalid dimensions, must be in the form WIDTHxHEIGHT: \"1x1\"."
+command.dimensions.too-large = "&cDimensions specified are too large."
+command.no-image = "&cThis URL does not have an image."
+command.not-found = "&cNot file found at URL."
+command.unknown-host = "&cUnknown host '%s'. This could be because it's invalid, or the server does not have access to it. Perhaps try a different URL."
+command.not-https = "&cThis URL is not https. You must use a URL with https."
+command.domain.not-whitelisted = "&cThis is not a valid domain, please contact your server administrators if you believe this is an issue."
+command.domain.not-whitelisted.op = "&cThis domain is not whitelisted in your Mapify config.\n&cRun &4/mapify config whitelist add %s &cto automatically add it to the config."
+command.cooldown = "&cYou can use this command again in %d seconds."
+command.maps-given = "&aGiven %d map%s."
+command.reload.success = "&aConfiguration reloaded successfully with no changes."
+command.reload.success.changes = "&aConfiguration reloaded successfully."
+command.reload.error = "&cThere was an error reading the config: %s"
+command.config.updated = "&aConfig updated!"
+command.config.field-invalid = "&c%s may only be set to `true` or `false`"
+command.config.field.invalid-int = "&c%s may only be set to an integer."
+command.config.field.invalid-usage = "&cUsage: /mapify config %s <add|remove> <domain>"
+command.config.field.invalid-option = "&c%s may only perform `add` or `remove`"
+command.config.field.unknown = "&cUnknown field '%s'"
+
+# System messages
+system.update-available = "&eMapify has an update!"
+system.update-download = "&eGet it from https://modrinth.com/plugin/mapify"
+system.metrics-loaded = "&aMetrics loaded."
+system.maps-loaded = "&aLoaded %d map%s."
+system.unable-to-create-img-dir = "&cUnable to create img directory."

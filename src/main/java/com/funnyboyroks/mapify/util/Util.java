@@ -126,7 +126,7 @@ public class Util {
             return image;
         } catch (IOException e) {
             Mapify.INSTANCE.getLogger().severe("Invalid image url: " + url);
-            // Java is a horrible fucking languaage, nobody should be subject to this god-awful garbage.
+            // Java is a horrible language, nobody should be subject to this god-awful garbage.
             Throwable cause = e.getCause();
             if (cause == null) {
                 e.printStackTrace();
