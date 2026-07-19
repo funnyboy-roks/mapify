@@ -288,6 +288,10 @@ public class CommandMapify implements CommandExecutor, TabCompleter {
             Util.giveItems(player, stacks.toArray(ItemStack[]::new));
 
             player.sendMessage(ChatColor.GREEN + "Given " + stacks.size() + " map" + (stacks.size() == 1 ? "." : "s."));
+        } catch (FetchImageException.UnknownImageFormat e) {
+            player.sendMessage(ChatColor.RED + "Unknown image format");
+        } catch (FetchImageException.UnsupportedImageFormat e) {
+            player.sendMessage(ChatColor.RED + "Unsupported image format: " + ChatColor.DARK_RED + e.format.getName());
         } catch (FetchImageException.NotFoundException e) {
             player.sendMessage(ChatColor.RED + "Not file found at URL.");
         } catch (FetchImageException.UnknownHostException e) {

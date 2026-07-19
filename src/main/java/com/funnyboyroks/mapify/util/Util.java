@@ -6,6 +6,13 @@ import com.funnyboyroks.mapify.PluginData;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import net.md_5.bungee.api.ChatColor;
+
+import org.apache.commons.imaging.AbstractImageParser;
+import org.apache.commons.imaging.ImageFormat;
+import org.apache.commons.imaging.ImageFormats;
+import org.apache.commons.imaging.Imaging;
+import org.apache.commons.imaging.bytesource.ByteSource;
+import org.apache.commons.imaging.internal.ImageParserFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -15,7 +22,6 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -35,6 +41,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import javax.imageio.ImageIO;
 
 public class Util {
 
@@ -113,7 +121,18 @@ public class Util {
             }
         }
         try {
-            Image image = ImageIO.read(url);
+            var byteSource = ByteSource.inputStream(url.openStream(), null);
+
+            ImageFormat format = Imaging.guessFormat(byteSource);
+            AbstractImageParser<?> parser;
+            if (format.equals(ImageFormats.UNKNOWN)) {
+                throw new FetchImageException.UnknownImageFormat(url);
+            } else if (format.equals(ImageFormats.WEBP)) {
+                throw new FetchImageException.UnsupportedImageFormat(url, ImageFormats.WEBP);
+            } else {
+                parser = ImageParserFactory.getImageParser(format);
+            }
+            var image = parser.getBufferedImage(byteSource, null);
 
             if (image == null) {
                 Mapify.INSTANCE.getLogger().info("No image found at URL: " + url);
@@ -262,7 +281,6 @@ public class Util {
         Mapify.INSTANCE.dataHandler.dirty();
 
         if (data == null) return null;
-        System.out.println("id = " + view.getId());
         if (
             // Coordinates are (MAX_INT, MAX_INT)
             (view.getCenterX() == Integer.MAX_VALUE && view.getCenterZ() == Integer.MAX_VALUE)
