@@ -173,7 +173,9 @@ public class Util {
         assert meta != null;
 
         MapView view = Bukkit.getServer().createMap(Bukkit.getServer().getWorlds().get(0));
-        Mapify.INSTANCE.dataHandler.data.mapData.put(view.getId(), new PluginData.MapData(url, x, y, w, h));
+        var mapData = new PluginData.MapData(url, x, y, w, h);
+        mapData.configureView(view);
+        Mapify.INSTANCE.dataHandler.data.mapData.put(view.getId(), mapData);
         Mapify.INSTANCE.dataHandler.dirty();
 
 
@@ -256,15 +258,22 @@ public class Util {
     }
 
     public static MapRenderer getRenderer(MapView view) {
-
         PluginData.MapData data = Mapify.INSTANCE.dataHandler.data.mapData.get(view.getId());
         Mapify.INSTANCE.dataHandler.dirty();
 
         if (data == null) return null;
-
-        Image img = Mapify.INSTANCE.imageCache.get(getUrl(data.url));
-        if (img == null) return null;
-        return new CustomMapRenderer(img, data.x, data.y, data.scaleX, data.scaleY);
+        System.out.println("id = " + view.getId());
+        if (
+            // Coordinates are (MAX_INT, MAX_INT)
+            (view.getCenterX() == Integer.MAX_VALUE && view.getCenterZ() == Integer.MAX_VALUE)
+            // OR we didn't set the coords to max on this map (old map)
+            || !data.maxCoords
+        ) {
+            Image img = Mapify.INSTANCE.imageCache.get(getUrl(data.url));
+            if (img == null) return null;
+            return new CustomMapRenderer(img, data.x, data.y, data.scaleX, data.scaleY);
+        }
+        return null;
     }
 
     public static boolean isOperator(CommandSender player) {
